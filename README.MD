@@ -6,20 +6,20 @@
 
 **Usage Example**
 *importhtml()*
-> GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() 
-> POST: [/api/v1/importhtml](). 
+> GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() <br/>
+> POST: [/api/v1/importhtml]() <br/> 
 ```
 // In reqest body 
 { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "tab":"table","indes":"0"}
 ```
     
--  url – The URL of the page to be examined, including protocol (e.g. http://).   
+- url – The URL of the page to be examined, including protocol (e.g. http://).   
 - tag – html DOM tag e.g. "body", "table", "list", depending on what type of structure contains the desired data.
 - index *(optional)* – The index, starting at zero 0, which identifies which e.g. table or list as defined in the HTML source should be returned.
     
 *importxml()*
-> GET: [/api/v1/importxml?apikey=XXXXX&url=https//:www.yourwebsite.com&query=//table]()
-> POST: [/api/v1/importxml](). 
+> GET: [/api/v1/importxml?apikey=XXXXX&url=https//:www.yourwebsite.com&query=//table]()<br/>
+> POST: [/api/v1/importxml]() <br/>
 ```  
 // In reqest body 
 { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "query":"//table"}
@@ -33,14 +33,14 @@
 {isSussess:boolean, result:""}
 ```
 **Packages**
-Application framework: express
-Authentication: passport
-Code Formatter: eslint
-Logging: morgan
-Parsing: xmldom, xpath, puppeteer
-Session: express-session, helmet
-Session store: redis
-Testing: chia, mocha, sinon, nyc
+- Application framework: express 
+- Authentication: passport
+- Code Formatter: eslint
+- Logging: morgan
+- Parsing: xmldom, xpath, puppeteer
+- Session: express-session, helmet
+- Session store: redis
+- Testing: chia, mocha, sinon, nyc
 
 **Installation**
 1. Install packages in package.json
@@ -57,7 +57,7 @@ REDIS_STORE_URL=redis://127.0.0.1:6379
 5. In terminal, type `npm start` to test
 
 
-**Folder structure**
+**Folder structure** <br/>
 App <br/>
 ├──config <br/> 
 ├──controllers <br/> 
