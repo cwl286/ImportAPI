@@ -9,7 +9,7 @@
 > GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() <br/>
 > POST: [/api/v1/importhtml]() <br/> 
 ```
-// In reqest body 
+// In request body 
 { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "tab":"table","indes":"0"}
 ```
     
@@ -21,7 +21,7 @@
 > GET: [/api/v1/importxml?apikey=XXXXX&url=https//:www.yourwebsite.com&query=//table]()<br/>
 > POST: [/api/v1/importxml]() <br/>
 ```  
-// In reqest body 
+// In request body 
 { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "query":"//table"}
 ``` 
 - url – The URL of the page to be examined, including protocol (e.g. http://).   
