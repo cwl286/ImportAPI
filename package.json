@@ -1,0 +1,97 @@
+{
+  "name": "webapi",
+  "version": "1.0.0",
+  "description": "web crawler",
+  "main": "app.js",
+  "directories": {
+    "app": "app",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "nyc mocha ./test/app.js --timeout 100000",
+    "start": "node app.js",
+    "lint": "eslint .",
+    "lint-fix": "npm run lint -- --fix",
+    "pretest": "npm run lint"
+  },
+  "author": "cwl",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "eslint": "^8.12.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^9.2.2",
+    "nyc": "^15.1.0",
+    "sinon": "^13.0.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "google"
+    ],
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
+    "rules": {
+      "arrow-parens": 0,
+      "block-spacing": 1,
+      "brace-style": 0,
+      "camelcase": 1,
+      "curly": 1,
+      "comma-dangle": 1,
+      "comma-spacing": 1,
+      "eol-last": 1,
+      "indent": 0,
+      "max-len": [
+        1,
+        120,
+        4,
+        {
+          "ignoreUrls": true
+        }
+      ],
+      "new-cap": 0,
+      "no-console": 0,
+      "no-multiple-empty-lines": 1,
+      "no-multi-spaces": 1,
+      "no-unreachable": 1,
+      "no-trailing-spaces": 0,
+      "no-undef": 0,
+      "no-useless-catch": 1,
+      "no-unused-vars": 1,
+      "object-curly-spacing": 0,
+      "padded-blocks": 1,
+      "prefer-const": 1,
+      "quotes": 1,
+      "require-jsdoc": 1,
+      "semi": 1,
+      "space-before-function-paren": 0,
+      "valid-jsdoc": 1
+    }
+  },
+  "eslintIgnore": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "connect-redis": "^6.1.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "helmet": "^5.0.2",
+    "morgan": "^1.10.0",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "passport-localapikey-update": "^0.6.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0",
+    "redis": "^4.0.4",
+    "xmldom": "^0.6.0",
+    "xpath": "^0.0.32"
+  }
+}
