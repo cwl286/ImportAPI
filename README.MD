@@ -1,10 +1,10 @@
-# ImportAPI
+## ImportAPI
 
 **Language** nodejs <br/>
 **Objective** Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
 **Background** Google Apps Script's *fetch()* does not allow the change *User-Agent*, and hence it has been blocked by many sites. <br/>
 
-**Usage Example**
+**Usage Example** <br/>
 *importhtml()*
 > GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() <br/>
 > POST: [/api/v1/importhtml]() <br/> 
@@ -24,8 +24,8 @@
 // In reqest body 
 { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "query":"//table"}
 ``` 
-    - url – The URL of the page to be examined, including protocol (e.g. http://).   
-    - query – The XPath query to be run on the structured data.  
+- url – The URL of the page to be examined, including protocol (e.g. http://).   
+- query – The XPath query to be run on the structured data.  
 
 **API Respones** 
 ```
