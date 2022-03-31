@@ -19,8 +19,8 @@ config.sessionOption = {
   },
 };
 
-// Configure redis client if .env = redis
-if (process.env.SESSION_STORE.toUpperCase() === 'REDIS') {
+// Configure redis client if process.env.SESSION_STORE = REDIS
+if (process.env.SESSION_STORE === 'REDIS') {
   const session = require('express-session');
   const {createClient} = require('redis');
   const RedisStore = require('connect-redis')(session);
@@ -31,6 +31,5 @@ if (process.env.SESSION_STORE.toUpperCase() === 'REDIS') {
   redisClient.connect().then(() => console.log('success')).catch(console.error);
   config.sessionOption.store = new RedisStore({client: redisClient});
 }
-
 
 module.exports = config;
