@@ -83,8 +83,9 @@ Test <br/>
     - In *Setting* tab, add [https://github.com/jontewks/puppeteer-heroku-buildpack](https://github.com/jontewks/puppeteer-heroku-buildpack) to *add buildpack* in *Buildpacks*
     - IN *Setting* tab, you can configure your *Domains*
     - HEROKU will build automatically
+
 (To create and manage Heroku apps directly from the terminal) <br/>
-1. Download [https://devcenter.heroku.com/articles/heroku-cli](The Heroku CLI)
+1. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
     - Check heroku `heroku --version`
     - Check git `git --version`
 2. Login in terminal `heroku login -i`
