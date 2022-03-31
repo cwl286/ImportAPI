@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "web crawler",
   "main": "app.js",
+  "engines": {
+    "node": "v17.8.0"
+  },
   "directories": {
     "app": "app",
     "test": "test"
   },
   "scripts": {
     "test": "nyc mocha ./test --timeout 100000",
-    "start": "node app.js",
+    "start": "node app.js --timeout 100000",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
     "pretest": "npm run lint"

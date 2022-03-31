@@ -39,7 +39,7 @@ app.all('/logout', function (req, res) {
 // Error-handling middleware
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json(feedback.Message(isSuccess = false, result = err)).end();
+  res.status(500).json(new feedback.Message(isSuccess = false, result = err)).end();
 });
 
 module.exports = app;
