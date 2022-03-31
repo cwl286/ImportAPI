@@ -6,6 +6,7 @@ const helmet =  require('helmet');
 const { apiRouter, initAuth, feedback } = require('./controllers/index');
 const sessionOption = require('./config/index').config.sessionOption;
 const {initMorgan} = require('./logger/index');
+const { status } = require('express/lib/response');
 const app = express();
 
 // security middlewares
@@ -38,7 +39,7 @@ app.all('/logout', function (req, res) {
 // Error-handling middleware
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json(feedback.error).end();
+  res.status(500).json(feedback.Message(isSuccess = false, result = err)).end();
 });
 
 module.exports = app;
