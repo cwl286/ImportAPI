@@ -1,7 +1,9 @@
 # ImportAPI
 
 **Language** nodejs <br/>
-**Objective** Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
+**Objective** <br/>
+Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
+Try to avoid Cloudflare <br/>
 **Background** Google Apps Script's *fetch()* does not allow the change *User-Agent*, and hence it has been blocked by many sites. <br/>
 
 **Usage Example**
@@ -32,7 +34,7 @@
 //In json format
 {isSussess:boolean, result:""}
 ```
-**Packages**
+**Packages in use**
 Application framework: express
 Authentication: passport
 Code Formatter: eslint
@@ -42,10 +44,10 @@ Session: express-session, helmet
 Session store: redis
 Testing: chia, mocha, sinon, nyc
 
-**Installation**
+**To use**
 1. Install packages in package.json
 2. Install redis, start redis
-3. Configure .env file. Only if SESSION_STORE=REDIS, redis is used to store session
+3. Configure the environment . Only if *SESSION_STORE=REDIS* in .env file or *process.env.SESSION_STORE=REDIS*, redis is used to store session
 ```
 PORT=3000
 LOG_DIR=""
@@ -55,7 +57,6 @@ REDIS_STORE_URL=redis://127.0.0.1:6379
 ```
 4. In terminal, type `npm start` to run
 5. In terminal, type `npm start` to test
-
 
 **Folder structure**
 App <br/>
@@ -68,3 +69,4 @@ App <br/>
 ├──logger <br/> 
 ├──models <br/> 
 Test <br/>
+.env <br/>

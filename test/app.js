@@ -300,7 +300,7 @@ describe('/api/v1/importxml stimulation', () => {
             .send({
                 url: queryUrl,
                 query: incorrectQuery,
-                apikey: apikey
+                apikey: apikey,
             });
         expect(res.status).to.be.equal(200);
         expect(res.body.result.length).to.be.equal(0);

@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "nyc mocha ./test/app.js --timeout 100000",
+    "test": "nyc mocha ./test --timeout 100000",
     "start": "node app.js",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
@@ -71,6 +71,7 @@
       "require-jsdoc": 1,
       "semi": 1,
       "space-before-function-paren": 0,
+      "spaced-comment": 1,
       "valid-jsdoc": 1
     }
   },
@@ -88,8 +89,10 @@
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "passport-localapikey-update": "^0.6.0",
+    "proxy-chain": "^1.0.4",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.9.0",
+    "random-useragent": "^0.5.0",
     "redis": "^4.0.4",
     "xmldom": "^0.6.0",
     "xpath": "^0.0.32"
