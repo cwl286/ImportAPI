@@ -71,3 +71,24 @@ App <br/>
 ├──models <br/> 
 Test <br/>
 .env <br/>
+
+
+**Deployment** <br/>
+*HEROKU*   (deploy without REDIS) <br/>
+1. Clone this responsitory to your GitHub
+2. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
+3. Create *New App* with your *App name* and *region*
+    - Connet your *New App* to your GitHub
+    - In *Deploy* tab, conect to your GitHub clone respository
+    - In *Setting* tab, add [https://github.com/jontewks/puppeteer-heroku-buildpack](https://github.com/jontewks/puppeteer-heroku-buildpack) to *add buildpack* in *Buildpacks*
+    - IN *Setting* tab, you can configure your *Domains*
+    - HEROKU will build automatically
+(To create and manage Heroku apps directly from the terminal) <br/>
+1. Download [https://devcenter.heroku.com/articles/heroku-cli](The Heroku CLI)
+    - Check heroku `heroku --version`
+    - Check git `git --version`
+2. Login in terminal `heroku login -i`
+    - To check logs: `heroku logs -t -a=<New App Name>`
+    - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/)): `heroku local web`
+
+[HEROKU Reference](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
