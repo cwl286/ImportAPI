@@ -7,7 +7,7 @@
 
 **Background** Google Apps Script's *fetch()* does not allow the change *User-Agent*, and hence it has been blocked by many sites. <br/>
 
-**Usage Example** <br/>
+### Usage Example <br/>
 *importhtml()*
 > GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() <br/>
 > POST: [/api/v1/importhtml]() <br/> 
@@ -35,7 +35,7 @@
 //In json format
 {isSussess:boolean, result:""}
 ```
-**Packages**
+### Packages
 - Application framework: express 
 - Authentication: passport
 - Code Formatter: eslint
@@ -45,7 +45,7 @@
 - Session store: redis
 - Testing: chia, mocha, sinon, nyc
 
-**To use**
+### How to try locally
 1. Install packages in package.json
 2. Install redis, start redis
 3. Configure the environment . Only if *SESSION_STORE=REDIS* in .env file or *process.env.SESSION_STORE=REDIS*, redis is used to store session
@@ -60,7 +60,7 @@ REDIS_STORE_URL=redis://127.0.0.1:6379
 5. In terminal, type `npm start` to test
 
 
-**Folder structure** <br/>
+### Folder structure  <br/>
 App <br/>
 ├──config <br/> 
 ├──controllers <br/> 
@@ -74,7 +74,7 @@ Test <br/>
 .env <br/>
 
 
-**Deployment** <br/>
+### Deployment  <br/>
 *HEROKU*   (deploy without REDIS) <br/>
 1. Clone this responsitory to your GitHub
 2. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
