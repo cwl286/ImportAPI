@@ -13,8 +13,9 @@ const proxyChain = require('proxy-chain');
  */
 const getHtml = async function (url) {
     try {
-        const USER_AGENT = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1)
-AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36`;
+        
+        const DEFAULT_USER_AGENT = `Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.361`;
 
         const args = ['--no-sandbox', '--disable-setuid-sandbox'];
         if (process.env.PROXY_SERVER) {
@@ -23,6 +24,8 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36`;
         const browser = await puppeteer.launch(
             {
                 headless: true,
+                // for docker, (install chromium)
+                // executablePath: '/usr/bin/chromium-browser', 
                 executablePath: process.env.CHROME_BIN || null,
                 args: args,
                 ignoreHTTPSErrors: true,
@@ -31,7 +34,7 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36`;
         );
         const page = await browser.newPage();
         const userAgent = randomUseragent.getRandom();
-        const newUserAgent = userAgent || USER_AGENT;
+        const newUserAgent = userAgent || DEFAULT_USER_AGENT;
         // Randomize viewport size
         await page.setViewport({
             width: 1920 + Math.floor(Math.random() * 100),

@@ -2,8 +2,9 @@
 
 **Language** nodejs <br/>
 **Objective** <br/>
-Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
-Try to avoid Cloudflare <br/>
+- Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
+- Try to avoid Cloudflare <br/>
+
 **Background** Google Apps Script's *fetch()* does not allow the change *User-Agent*, and hence it has been blocked by many sites. <br/>
 
 **Usage Example** <br/>
@@ -91,5 +92,12 @@ Test <br/>
 2. Login in terminal `heroku login -i`
     - To check logs: `heroku logs -t -a=<New App Name>`
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/)): `heroku local web`
+- [HEROKU Reference](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
-[HEROKU Reference](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
+
+*docker*   (deploy without REDIS) <br/>
+1. Start Docker daemon
+2. Go to the directory of *Dockerfile*.
+3. Type `docker build -t <YOUR_IMAGE_NAME> .` in terminal to build a docker image (dot at the end is a must).
+4. Run the docker image by typing `docker run -d --rm -p 3000:3000  <YOUR_IMAGE_NAME>`
+    - *3000:3000* refers to *<HOST_PORT>:<IMAGE_PORT>*, where *<IMAGE_PORT>* is defined as *ENV PORT=3000* and then *EXPOSE 3000* in *Dockerfile*.
