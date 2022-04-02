@@ -21,6 +21,8 @@
     ```$ heroku logs -t -a=<New App Name>```
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/)): 
     ```$ heroku local web```
+    - To see all the preset Heroku environment variables
+    ```heroku run printenv```
     - [https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
 
