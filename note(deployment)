@@ -29,16 +29,16 @@
     - Connet your *New App* to your GitHub
     - In *Deploy* tab, check  *Deploy using Heroku Git*
 3. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
+    - Ensure the *heroku.yml* exists
     ```
-    $ // Login in terminal
     $ heroku login -i
     $ cd my-project/
     $ git init
     $ heroku git:remote -a <New App Name>
     $ git add .
-    $ heroku stack:set container
-    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
     $ git commit -am "make it better"
+    $ heroku stack:set container
+    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git"
     $ git push heroku master
     ```
 - [HEROKU Reference](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
