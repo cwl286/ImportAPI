@@ -15,9 +15,9 @@ services:
         environment:        
           SESSION_SECRET: docker_cat
           SESSION_STORE: redis
-          #Refer to the service name: redis_db
-          REDIS_STORE_URL: 'redis://redis_db:6379'
-    redis_db:
+          #Refer to the service name: redis
+          REDIS_STORE_URL: 'redis://redis:6379'
+    redis:
         image: "redis:alpine"
         restart: always
         ports:
