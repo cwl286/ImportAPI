@@ -8,7 +8,7 @@ Go to directory of app with docker-compose.yml
     
 *images*
 Go to directory of with Dockerfile
-- To build an image from a Dockerfile: `$ docker build .` (must with a dot in the end)
+- To build an image from a Dockerfile: `$ docker build .` (must with a dot at the end)
     - To build with tag: `$ docker build -t name:tag .`  or `$ docker build --tag name:tag .`
     - Must add a dot, which means to use the Dockerfile in the local directory.
 - To check exisiting docker image: `$ docker images`
