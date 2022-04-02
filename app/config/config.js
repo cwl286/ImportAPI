@@ -21,6 +21,7 @@ config.sessionOption = {
 
 // Configure redis client if process.env.SESSION_STORE = REDIS
 if (process.env.SESSION_STORE === 'REDIS') {
+  console.log(process.env);
   const session = require('express-session');
   const {createClient} = require('redis');
   const RedisStore = require('connect-redis')(session);

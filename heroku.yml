@@ -2,11 +2,8 @@ setup:
   addons:
     - plan: heroku-redis
       as: REDIS
-  config:
-    SESSION_SECRET: docker_cat
 build:
   docker:
     web: Dockerfile
-    worker: Dockerfile
 
 
