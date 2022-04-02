@@ -35,8 +35,9 @@
     $ cd my-project/
     $ git init
     $ heroku git:remote -a <New App Name>
-    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
     $ git add .
+    $ heroku stack:set container
+    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
     $ git commit -am "make it better"
     $ git push heroku master
     ```
