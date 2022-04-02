@@ -85,7 +85,7 @@ Test <br/>
     - IN *Setting* tab, you can configure your *Domains*
     - HEROKU will build automatically
 
-(To create and manage Heroku apps directly from the terminal) <br/>
+&emsp;(To create and manage Heroku apps directly from the terminal) <br/>
 1. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
     - Check heroku `heroku --version`
     - Check git `git --version`
@@ -100,4 +100,12 @@ Test <br/>
 2. Go to the directory of *Dockerfile*.
 3. Type `docker build -t <YOUR_IMAGE_NAME> .` in terminal to build a docker image (dot at the end is a must).
 4. Run the docker image by typing `docker run -d --rm -p 3000:3000  <YOUR_IMAGE_NAME>`
-    - *3000:3000* refers to *<HOST_PORT>:<IMAGE_PORT>*, where *<IMAGE_PORT>* is defined as *ENV PORT=3000* and then *EXPOSE 3000* in *Dockerfile*.
+    - *3000:3000* refers to *<HOST_PORT>:<IMAGE_PORT>*, where in *Dockerfile*, *<IMAGE_PORT>* is defined as *ENV PORT=3000* and then *EXPOSE 3000*.
+    - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/))
+
+*docker compose*   (deploy with REDIS) <br/>
+1. Start Docker daemon
+2. Go to the directory of *docker-compose.yml*.
+3. Type `docker compose up --build` in terminal to build docker images
+    - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/))
+
