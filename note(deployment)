@@ -6,7 +6,8 @@
     - Connet your *New App* to your GitHub
     - In *Deploy* tab, conect to your GitHub clone respository
     - In *Setting* tab, add [https://github.com/jontewks/puppeteer-heroku-buildpack](https://github.com/jontewks/puppeteer-heroku-buildpack) to *add buildpack* in *Buildpacks*
-    - IN *Setting* tab, you can configure your *Domains*
+    - In *Setting* tab, you can configure your *Domains*
+    - In *Deploy/Manual deploy* tab, deploy branch.
     - HEROKU will build automatically
 
 &emsp;(To create and manage Heroku apps directly from the terminal) <br/>
