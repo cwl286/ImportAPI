@@ -26,7 +26,7 @@ if (process.env.SESSION_STORE === 'REDIS') {
   const {createClient} = require('redis');
   const RedisStore = require('connect-redis')(session);
   const redisClient = createClient({
-    url: process.env.REDIS_STORE_URL || 'redis://127.0.0.1:6379',
+    url: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
     legacyMode: true,
   });// Currently connect-redis is not compatible with the latest version of node redis.
   redisClient.connect().then(() => console.log('success')).catch(console.error);

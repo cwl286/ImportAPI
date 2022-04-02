@@ -54,7 +54,7 @@ PORT=3000
 LOG_DIR=""
 SESSION_SECRET=cat
 SESSION_STORE=REDIS
-REDIS_STORE_URL=redis://127.0.0.1:6379
+REDIS_URL=redis://127.0.0.1:6379
 ```
 4. In terminal, type `$ npm start` to run
 5. In terminal, type `$ npm start` to test
