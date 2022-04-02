@@ -1,16 +1,17 @@
-#setup:
-#  addons:
-#    - plan: redis
-  #config:
-    #SESSION_SECRET: docker_cat
-    #SESSION_STORE: redis
-    #Refer to the service name: redis
-    #REDIS_STORE_URL: 'redis://redis:6379'
-#build:
-#  docker:
-#    api: ./Dockerfile
+setup:
+  addons:
+    - plan: heroku-redis
+      as: REDIS
+  config:
+    SESSION_SECRET: docker_cat
+    SESSION_STORE: redis
+    Refer to the service name: redis
+    REDIS_STORE_URL: 'redis://redis:6379'
 build:
   docker:
-    web: ./Dockerfile
+    web: Dockerfile
+    worker: Dockerfile
+release:
+  image: web
 
 
