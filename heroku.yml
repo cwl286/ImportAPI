@@ -1,0 +1,14 @@
+setup:
+  addons:
+    - plan: redis
+      as: DATABASE
+  config:
+    SESSION_SECRET: docker_cat
+    SESSION_STORE: redis
+    #Refer to the service name: redis
+    REDIS_STORE_URL: 'redis://redis:6379'
+build:
+  docker:
+    api: Dockerfile
+release:
+  image: api
