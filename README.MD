@@ -94,6 +94,15 @@ Test <br/>
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/)): `heroku local web`
 - [HEROKU Reference](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
+*HEROKU* (deploy without REDIS) <br/>
+1. Go to the directory of heroku.yml
+2. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
+3. Create *New App* with your *App name* and *region*
+    - Connet your *New App* to your GitHub
+    - In *Deploy* tab, conect to your GitHub clone respository
+    - In *Setting* tab, add [https://github.com/jontewks/puppeteer-heroku-buildpack](https://github.com/jontewks/puppeteer-heroku-buildpack) to *add buildpack* in *Buildpacks*
+    - IN *Setting* tab, you can configure your *Domains*
+    - HEROKU will build automatically
 
 *docker*   (deploy without REDIS) <br/>
 1. Start Docker daemon
