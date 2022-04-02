@@ -1,5 +1,5 @@
 #### Deployment  <br/>
-######*HEROKU*   (deploy *without* REDIS) <br/>
+######*HEROKU*   (deploy without REDIS) <br/>
 1. Clone this responsitory to your GitHub
 2. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
 3. Create *New App* with your *App name* and *region*
@@ -21,9 +21,10 @@
     ```$ heroku logs -t -a=<New App Name>```
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/)): 
     ```$ heroku local web```
+    - [https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
 
-######*HEROKU* (deploy **with** REDIS) <br/>
+######*HEROKU* (deploy with REDIS) <br/>
 1. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
 2. Create *New App* with your *App name* and *region*
     - Connet your *New App* to your GitHub
@@ -41,8 +42,7 @@
     $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git"
     $ git push heroku master
     ```
-- [HEROKU Reference](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
-<br/>
+    - [https://devcenter.heroku.com/articles/build-docker-images-heroku-yml](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
 
 ######*docker*   (deploy without REDIS) <br/>
 1. Start Docker daemon

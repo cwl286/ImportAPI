@@ -1,7 +1,7 @@
 setup:
-  addons:
-    - plan: redis
-      as: DATABASE
+  #addons:
+  #  - plan: redis
+  #    as: DATABASE
   config:
     SESSION_SECRET: docker_cat
     SESSION_STORE: redis
@@ -12,7 +12,6 @@ setup:
 #    api: ./Dockerfile
 build:
   docker:
-    api: ./Dockerfile
-#release:
-#  image: api
+    web: ./Dockerfile
+
 
