@@ -1,6 +1,6 @@
-setup:
-  addons:
-    - plan: redis
+#setup:
+#  addons:
+#    - plan: redis
   #config:
     #SESSION_SECRET: docker_cat
     #SESSION_STORE: redis
