@@ -39,7 +39,7 @@
     $ git add .
     $ git commit -am "make it better"
     $ heroku stack:set container
-    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git"
+    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
     $ git push heroku master
     ```
     - [https://devcenter.heroku.com/articles/build-docker-images-heroku-yml](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
