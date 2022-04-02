@@ -16,12 +16,12 @@ services:
           SESSION_SECRET: docker_cat
           SESSION_STORE: redis
           #Refer to the service name: redis
-          REDIS_STORE_URL: 'redis://redis:60379'
+          REDIS_URL: 'redis://redis:6379'
     redis:
         image: "redis:alpine"
         restart: always
         ports:
           # <Port for hosts> : < Port for containers>
-          - '60379:60379'
+          - '6379:6379'
 
           
