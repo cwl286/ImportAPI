@@ -33,6 +33,7 @@
     - In *Deploy* tab, check  *Deploy using Heroku Git*
 3. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
     - Ensure the *heroku.yml* exists
+    - Ensure that in .env file, SESSION_STORE=REDIS
     ```
     $ heroku login -i
     $ cd my-project/
