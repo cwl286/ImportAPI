@@ -26,28 +26,6 @@
     - [https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
 
-######*HEROKU* (deploy with REDIS) <br/>
-1. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
-2. Create *New App* with your *App name* and *region*
-    - Connet your *New App* to your GitHub
-    - In *Deploy* tab, check  *Deploy using Heroku Git*
-3. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
-    - Ensure the *heroku.yml* exists
-    - Ensure that in .env file, SESSION_STORE=REDIS
-    ```
-    $ heroku login -i
-    $ cd my-project/
-    $ git init
-    $ heroku git:remote -a <New App Name>
-    $ git add .
-    $ git commit -am "first commit"
-    $ heroku stack:set container
-    $ // Redis url will be aviable in 'REDIS_URL' environment variable
-    $ heroku buildpacks:publish heroku/ci-redis master
-    $ git push heroku master
-    ```
-    - [https://devcenter.heroku.com/articles/build-docker-images-heroku-yml](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
-
 ######*docker*   (deploy without REDIS) <br/>
 1. Start Docker daemon
 2. Go to the directory of *Dockerfile*.
