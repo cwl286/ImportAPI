@@ -1,12 +1,13 @@
 
-**Note about docker terminal commands**
+### Note about docker terminal commands
+
 *docker compose*  <br/>
 (to run multi-container Docker applications) <br/>
 Go to directory of app with docker-compose.yml
 - To build images: `$ docker compose up --build`
 - To build and run a container in *detached mode* `$ docker compose up -d`
     
-*images*
+*images* <br/>
 Go to directory of with Dockerfile
 - To build an image from a Dockerfile: `$ docker build .` (must with a dot at the end)
     - To build with tag: `$ docker build -t name:tag .`  or `$ docker build --tag name:tag .`
