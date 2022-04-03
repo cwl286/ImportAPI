@@ -3,9 +3,9 @@
 1. Clone this responsitory to your GitHub
 2. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
 3. Create *New App* with your *App name* and *region*
-    - Connet your *New App* to your GitHub
-    - In *Deploy* tab, conect to your GitHub clone respository
     - In *Setting* tab, add [https://github.com/jontewks/puppeteer-heroku-buildpack](https://github.com/jontewks/puppeteer-heroku-buildpack) to *add buildpack* in *Buildpacks*
+    Connet your *New App* to your GitHub
+    - In *Deploy* tab, conect to your GitHub clone respository
     - In *Setting* tab, you can configure your *Domains*
     - In *Deploy/Manual deploy* tab, deploy branch.
     - HEROKU will build automatically
