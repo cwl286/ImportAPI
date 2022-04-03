@@ -41,7 +41,8 @@
     $ git add .
     $ git commit -am "first commit"
     $ heroku stack:set container
-    $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
+    $ // Redis url will be aviable in 'REDIS_URL' environment variable
+    $ heroku buildpacks:publish heroku/ci-redis master
     $ git push heroku master
     ```
     - [https://devcenter.heroku.com/articles/build-docker-images-heroku-yml](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
