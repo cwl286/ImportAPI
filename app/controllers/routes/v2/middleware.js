@@ -1,5 +1,4 @@
-const {passport} = require('../../authorization/index');
-const {isValidUrl} = require('../../aux/index');
+const passport = require('../../authorization/index').passport;
 const {customErrors} = require('../../error/index');
 
 /**
@@ -39,33 +38,14 @@ const authMiddleware = () => {
 };
 
 /**
- * middleware to check the params in req.body
- * if they are enough for importHtml
+ * middleware to check the params in 
+ * if they are enough for query
  * @return {function} or redirect
  */
-const importHtmlMiddleware = () => {
+const queryMiddleware = () => {
     return function (req, res, next) {
-        if (!req.body.url || !req.body.tag) {
-            // throw new Error('test');
-            throw new customErrors.BadRequestError('Missing url or tag');
-        }
-        else if (!isValidUrl(req.body.url)) {
-            throw new customErrors.BadRequestError('Invalid url');
-        } else {
-            return next();
-        }
-    };
-};
-
-/**
- * middleware to check the params in req.body
- * if they are enough for importXml
- * @return {function} or redirect
- */
-const importXmlMiddleware = () => {
-    return function (req, res, next) {
-        if (!req.body.url && !req.body.query) {
-            throw new customErrors.BadRequestError('Missing url or query');
+        if (!req.body.ticker) {
+            throw new customErrors.BadRequestError('Missing ticker');
         } else {
             return next();
         }
@@ -74,6 +54,5 @@ const importXmlMiddleware = () => {
 
 module.exports = {
     authMiddleware: authMiddleware,
-    importHtmlMiddleware: importHtmlMiddleware,
-    importXmlMiddleware: importXmlMiddleware,
+    queryMiddleware: queryMiddleware,
 };

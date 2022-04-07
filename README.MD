@@ -2,45 +2,102 @@
 
 **Language** nodejs <br/>
 **Objective** <br/>
-- Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
-- Try to avoid Cloudflare <br/>
+- v1: Create a simple API to mimic google sheet's *importhtml()* and *importxml()*. <br/>
+- v1: Try to avoid Cloudflare <br/>
+- v2: Query profiles, ratios and metrics of various company
 
 **Background** Google Apps Script's *fetch()* does not allow the change *User-Agent*, and hence it has been blocked by many sites. <br/>
 
 ### Usage Example <br/>
-*importhtml()*
-> GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() <br/>
-> POST: [/api/v1/importhtml]() <br/> 
-```
-// In request body 
-{ "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "tab":"table","indes":"0"}
-```
+**importhtml**
+> GET: [/api/v1/importhtml?apikey=XXXXX&url=https//:www.yourwebsite.com&tag=table&index=0]() 
+
+> POST: [/api/v1/importhtml]()
+> In request body: { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "tab":"table","index":"0"}
     
 - url – The URL of the page to be examined, including protocol (e.g. http://).   
 - tag – html DOM tag e.g. "body", "table", "list", depending on what type of structure contains the desired data.
 - index *(optional)* – The index, starting at zero 0, which identifies which e.g. table or list as defined in the HTML source should be returned.
+
+```
+// JSON response: HTML element(s)
+e.g. {isSussess:boolean, result:"<table></table>"}
+```
     
-*importxml()*
-> GET: [/api/v1/importxml?apikey=XXXXX&url=https//:www.yourwebsite.com&query=//table]()<br/>
-> POST: [/api/v1/importxml]() <br/>
-```  
-// In request body 
-{ "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "query":"//table"}
-``` 
+**importxml**
+> GET: [/api/v1/importxml?apikey=XXXXX&url=https//:www.yourwebsite.com&query=//table]() 
+
+> POST: [/api/v1/importxml]() 
+> // In request body: { "apikey":"XXXXX", "url":"https//:www.yourwebsite.com", "query":"//table"}
+ 
 - url – The URL of the page to be examined, including protocol (e.g. http://).   
 - query – The XPath query to be run on the structured data.  
 
-**API Respones** 
 ```
-//In json format
-{isSussess:boolean, result:""}
+// JSON response: HTML element(s)
+e.g. {isSussess:boolean, result:"<table></table>"}
 ```
+
+**queryprofile**
+> GET: [/api/v2/importprofile?apikey=XXXXX&ticker=aapl]()
+
+> POST: [/api/v2/importprofile]()
+> // In request body: { "apikey":"XXXXX", "ticker:aapl"}
+ 
+- ticker – stock ticker e.g. AAPL, MSFT
+
+```
+// JSON response
+{   isSussess:boolean, 
+    result: {"type": "stocks",
+        "symbol": "aapl",
+        "ticker": "AAPL",
+        "name": "Apple",
+        "nameFull": "Apple Inc.",
+        "exchange": "NASDAQ",
+        "isOTC": false,
+        "isIpo": false,
+        ...
+        }
+}
+```
+
+**queryticker**
+> GET: [/api/v2/queryticker?apikey=XXXXX&ticker=aapl]()
+
+> POST: [/api/v2/queryticker]()
+> // In request body: { "apikey":"XXXXX", "ticker:aapl"}
+ 
+- ticker – stock ticker e.g. AAPL, MSFT
+
+```
+// JSON response in terms of million
+{   isSussess:boolean, 
+    result:"finviz": {
+            "Index": "DJIA S&P500",
+            "P/E": 28.53,
+            "EPS (ttm)": 6.02,
+            ...},
+            "stockanalysis": {
+            "P/FCF Ratio": 27.53,
+            "P/OCF Ratio": 24.98,
+            "EV/Sales Ratio": 7.57,
+            ...},
+            "shortvolume": {
+            "Date": "2022-04-06",
+            "Short Volume": 22342529,
+            "Long Volume": 26690959,
+            ...},
+}
+```
+
+
 ### Packages
 - Application framework: express 
 - Authentication: passport
 - Code Formatter: eslint
-- Logging: morgan
-- Parsing: xmldom, xpath, puppeteer
+- Logging: morgan, winston
+- Parsing: xmldom, xpath-html, puppeteer, axios
 - Session: express-session, helmet
 - Session store: redis
 - Testing: chia, mocha, sinon, nyc
@@ -66,10 +123,12 @@ App <br/>
 ├──controllers <br/> 
 &emsp;└──authorization <br/>
 &emsp;└──aux <br/>
+&emsp;error <br/>
 &emsp;└──fetch <br/>
+&emsp;logger <br/>
 &emsp;└──routes <br/>
-├──logger <br/> 
+&emsp;├──logger <br/> 
 ├──models <br/> 
 Test <br/>
-.env <br/>
+Logs <br/>
 

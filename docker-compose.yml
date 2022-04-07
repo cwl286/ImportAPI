@@ -14,7 +14,7 @@ services:
         restart: always      
         environment:        
           SESSION_SECRET: docker_cat
-          SESSION_STORE: redis
+          SESSION_STORE: REDIS
           #Refer to the service name: redis
           REDIS_URL: 'redis://redis:6379'
     redis:

@@ -1,4 +1,5 @@
 module.exports = {
   apiRouter: require('./api'),
-  feedback: require('../feedback'),
+  importHtml: require('./import').importHtml,
+  importXML: require('./import').importXML,
 };

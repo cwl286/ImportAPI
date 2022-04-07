@@ -1,4 +1,4 @@
 module.exports = {
-  getHtml: require('./html'),
+  getHtml: require('./html').getHtml,
   apikeys: require('./keys').apikeys,
 };
