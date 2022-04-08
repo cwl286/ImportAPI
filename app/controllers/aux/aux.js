@@ -1,11 +1,11 @@
 /**
  * check is valid url
- * @param {*} string 
+ * @param {string} str 
  * @return {boolean}
  */
-const isValidUrl = function (string) {
+const isValidUrl = function (str) {
     try {
-        new URL(string);
+        new URL(str);
     } catch (_) {
         return false;
     }
@@ -69,11 +69,11 @@ const tryParseFloat = function (input) {
 
     if (!isNaN(str)) {
         // e.g. 15,000
-        return Math.round(parseFloat(str)*100)/100;
+        return Math.round(parseFloat(str)*10000)/10000;
     } else if (str.indexOf('%') == str.length - 1) {
         // e.g. 15%
         let v = parseFloat(str) / 100;
-        v = Math.round(v * 100)/100;
+        v = Math.round(v * 10000)/10000;
         return (!isNaN(v))? v : input;
     }
     return input;
@@ -88,10 +88,27 @@ const transpose = function (arr) {
     return arr[0].map((_, colIndex) => arr.map(row => row[colIndex])); 
 };
 
+/**
+ * Find all indexes of a string in a longer string
+ * @param {string} str longer string 
+ * @param {string} target target string
+ * @return {Array} array of number
+ */
+const indexesOf = function(str, target) {
+    const startingIndices = [];
+    let indexOccurence = str.indexOf(target, 0);
+    while (indexOccurence >= 0) {
+        startingIndices.push(indexOccurence);
+        indexOccurence = str.indexOf(target, indexOccurence + 1);
+    }
+    return startingIndices; 
+};
+
 module.exports = {
     toMilBase: toMilBase,
     finToMathFormat: finToMathFormat,
     isValidUrl: isValidUrl,
     tryParseFloat: tryParseFloat,
-    transpose: transpose
+    transpose: transpose,
+    indexesOf: indexesOf,
 };

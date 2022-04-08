@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { authMiddleware, queryMiddleware } = require('./middleware');
 const Feedback = require('../../feedback');
-const { queryRatio, queryProfile } = require('./query');
+const { queryRatio, queryCurrentRatio, queryProfile } = require('./query');
 
 // for passport.authenticate by GET method
 // since passport.authenticate only allow POST
@@ -15,6 +15,17 @@ const responseRatio = () => {
     return async (req, res, next) => {
         try {
             const data = await queryRatio(req.body.ticker);
+            res.status(200).json(new Feedback(true, data));
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+const responseCurrentRatio = () => {
+    return async (req, res, next) => {
+        try {
+            const data = await queryCurrentRatio(req.body.ticker);
             res.status(200).json(new Feedback(true, data));
         } catch (err) {
             next(err);
@@ -39,10 +50,17 @@ router.route('/queryticker')
     .get(authMiddleware(), queryMiddleware(), responseRatio())
     .post(authMiddleware(), queryMiddleware(), responseRatio());
 
+// "/api/v?/queryticker/current"
+router.route('/queryticker/current')
+    // merge req.query and req.header to req.body to mimic POST
+    .get(authMiddleware(), queryMiddleware(), responseCurrentRatio())
+    .post(authMiddleware(), queryMiddleware(), responseCurrentRatio());
+
 // "/api/v?/queryprofile"
 router.route('/queryprofile')
     // merge req.query and req.header to req.body to mimic POST
     .get(authMiddleware(), queryMiddleware(), responseProfile())
     .post(authMiddleware(), queryMiddleware(), responseProfile());
+
 
 module.exports = router;

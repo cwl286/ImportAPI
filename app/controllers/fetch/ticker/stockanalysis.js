@@ -4,9 +4,9 @@ const { logger } = require('../../logger/index');
 /**
  * Get data from StockAnalysis.com
  * @param {string} ticker 
- * @return {object} dict of data in terms of Million
+ * @return {Array} array of data in terms of Million
  */
-const getData = async (ticker) => {
+const crawlData = async (ticker) => {
     const _url = `https://stockanalysis.com/stocks/${ticker}/financials/ratios/trailing/`;
 
     const { getHtml } = require('../../../models/index');
@@ -14,6 +14,7 @@ const getData = async (ticker) => {
     const { transpose, tryParseFloat } = require('../../aux/index');
     
     const html = await getHtml(_url);
+    logger.trace({ 'stockanalysis html input': { ticker: html}});
 
     /**
      * local function to parse ratio
@@ -24,6 +25,7 @@ const getData = async (ticker) => {
         let result = [];
         let table = queryDOM(html, 'table', 0);
         table = table.replaceAll('&', '&amp;').replaceAll('/n', '').replaceAll('xmlns="http://www.w3.org/2000/svg"', '');
+        logger.debug({'stockanalysis DOM table': {ticker: table.toString()}});
 
         // process thead row
         const ths = xpath.fromPageSource(table).findElements('//thead//*[text()]');
@@ -44,31 +46,58 @@ const getData = async (ticker) => {
         result = transpose(result);
         if (result.length > 0) {
             result[0] = result[0].map(x => x.trim());
-        }        
-        return result;
+        }
+        // last row is dummy on this website        
+        return result.slice(0, result.length - 1);
     }
     return (html) ? _parseRatio(html) : [];
 };
 
 /**
- * Get latest data of a ticker
+ * Get all data of a ticker
  * @param {string} ticker 
- * @return {dict} latest data
+ * @return {object} all data
  */
-const getLatestData = async (ticker) => {
-    const data = await getData(ticker);
-    const dict = {};
-    if (data.length > 1) {
+ const getData = async (ticker) => {
+    const result = {};
+    const data = await crawlData(ticker);
+
+    if (data.length > 1 && data[0].length > 0) {
         const header = data[0];
-        const row = data[1];
-        for (let i = 0; i < header.length; i++) {
-            dict[header[i]] = row[i];
+        // slice because first row is header
+        const rows = data.slice(1);
+        for (const row of rows) {
+            const dict = {};
+            for (let i = 1; i < header.length; i++) {
+                dict[header[i]] = row[i];
+            }
+            result[row[0]] = dict;
         }
     }
-    logger.info({stockanalysis:dict});
-    return dict;
+    logger.info({ stockanalysis: result });
+    return result;
 };
 
+/**
+ * Get latest data of a ticker
+ * @param {string} ticker 
+ * @return {object} latest data
+ */
+const getLatestData = async (ticker) => {
+    const result = {};
+    const data = await crawlData(ticker);
+    if (data.length > 1 && data[0].length > 0) {
+        const dict = {};
+        const header = data[0];
+        const row = data[1];
+        for (let i = 1; i < header.length; i++) {
+            dict[header[i]] = row[i];
+        }
+        result[row[0]] = dict;
+    }
+    logger.info({ stockanalysis: result });
+    return result;
+};
 
 /**
  * Get data from StockAnalysis.com
@@ -81,6 +110,7 @@ const getProfile = async (ticker) => {
     const { getHtml } = require('../../../models/index');
     const { customErrors } = require('../../error/index');
     const html = await getHtml(_url);
+    logger.trace({ 'stockanalysis html input': { ticker: html}});
 
     /**
      * local function to parse ratio
@@ -100,6 +130,8 @@ const getProfile = async (ticker) => {
             script.indexOf('>') + 1, 
             script.indexOf('</script>')
         );
+        logger.debug({'stockanalysis profile before JSON parse': {ticker: script}});
+
         try {
             profile = JSON.parse(script);
         } catch (err) {
@@ -111,6 +143,7 @@ const getProfile = async (ticker) => {
 };
 
 module.exports = {
+    crawlData: crawlData,
     getData: getData,
     getLatestData: getLatestData,
     getProfile: getProfile,

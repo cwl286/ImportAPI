@@ -1,5 +1,4 @@
 const winston = require('winston');
-const logger = require('.');
 
 const config = require('../../config/index').config;
 
@@ -32,9 +31,19 @@ const transports = [
     }),
 ];
 // Log more information
-if (config.env != 'production') {
+if (config.env == 'trace') {
     transports.push(new winston.transports.File({
-        filename: config.logger.infoDir || './info.log',
+        filename: config.logger.traceDir || './logs/trace.log',
+        level: 'trace'
+    }));
+} else if (config.env == 'debug') {
+    transports.push(new winston.transports.File({
+        filename: config.logger.debugDir || './logs/debug.log',
+        level: 'debug'
+    }));
+} else if (config.env != 'production') {
+    transports.push(new winston.transports.File({
+        filename: config.logger.infoDir || './logs/info.log',
         level: 'info'
     }));    
 }

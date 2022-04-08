@@ -59,7 +59,6 @@ class UnauthError extends BaseError {
      */
     constructor(description = 'Fail to authenticate apikey!') {
         super('Unauthorized', description, true, HttpStatusCode.AUANTHORIZED);
-
     }
 }
 

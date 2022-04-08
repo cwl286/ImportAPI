@@ -5,13 +5,15 @@ require('dotenv').config(); // Get setting from ./.env
  */
 const config = {};
 
-// 'production' or 'development'
+// 'production', 'development', 'debug', 'trace' for settings in logger.js
 config.env = process.env.NODE_ENV || 'development';
 
 config.logger = {
-  accessDir: process.env.ACCESS_LOG_DIR || './logs/access.log',
-  infoDir: process.env.ACCESS_LOG_DIR || './logs/info.log',
-  errorDir: process.env.ACCESS_LOG_DIR || './logs/error.log',
+  accessDir: './logs/access.log',
+  traceDir: './logs/trace.log', // 'trace'
+  debugDir: './logs/debug.log', // 'debug'
+  infoDir: './logs/info.log', // 'development'
+  errorDir: './logs/error.log', // 'production'
 };
 
 config.server = {
@@ -37,6 +39,6 @@ config.session = {
   },
   store: process.env.SESSION_STORE, // if set to 'REDIS', session will be stored in REDIS
   storeUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379', // default redis url
-}
+};
 
 module.exports = config;

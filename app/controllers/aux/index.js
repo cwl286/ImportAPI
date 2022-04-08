@@ -4,4 +4,5 @@ module.exports = {
     toMilBase: require('./aux').toMilBase,
     finToMathFormat: require('./aux').finToMathFormat,
     tryParseFloat: require('./aux').tryParseFloat,
+    indexesOf: require('./aux').indexesOf,
 };

@@ -11,7 +11,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "nyc mocha ./test/app/ --timeout 100000",
+    "test": "nyc mocha ./test/controllers/ --timeout 100000",
     "start": "node app.js --timeout 100000",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
@@ -54,6 +54,7 @@
       "eol-last": 1,
       "guard-for-in": 0,
       "indent": 0,
+      "keyword-spacing": 1,
       "max-len": [
         1,
         120,

@@ -15,6 +15,7 @@ const getData = async (ticker) => {
     const { toMilBase, finToMathFormat, tryParseFloat } = require('../../aux/index');
     
     const html = await getHtml(_url);
+    logger.trace({ 'finviz html input': { ticker: html}});
 
     /**
      * local function to parse ratio
@@ -24,6 +25,8 @@ const getData = async (ticker) => {
     function _parseRatio(html) {
         const dict = {};
         const table = queryDOM(html, 'table', 8);
+        logger.debug({'finviz DOM table': {ticker: table.toString()}});
+        
         let tdKeys = [], tdValues = [];
         try {
             tdKeys = xpath.fromPageSource(table).findElements('//td[text() and count(.//*) =0]');
@@ -45,8 +48,9 @@ const getData = async (ticker) => {
 
             dict[key] = value;
         }
-        logger.info({finviz:dict});
-        return dict;
+        const result = { Current: dict };
+        logger.info({ finviz: result });
+        return result;
     }
     return (html) ? _parseRatio(html) : {};
 };

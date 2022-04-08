@@ -9,12 +9,12 @@ const accessDir = require('../../config/index').config.logger.accessDir || './ac
 const init = (app) => {
   // log only 4xx and 5xx responses to console
   app.use(morgan('common', {
-    skip: function (req, res) { return res.statusCode < 400 }
+    skip: function (req, res) {return res.statusCode < 400;}
   }));
    
   // log all requests to access.log
   app.use(morgan('common', {
-    stream: fs.createWriteStream(accessDir, { flags: 'a' })
+    stream: fs.createWriteStream(accessDir, {flags: 'a'})
   }));
 };
 

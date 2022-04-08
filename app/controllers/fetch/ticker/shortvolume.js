@@ -3,14 +3,15 @@ const { logger } = require('../../logger/index');
 /**
  * Get data from shortvolume.com
  * @param {string} ticker 
- * @return {object} dict of data in terms of Million
+ * @return {Array} 2d array of table
  */
-const getData = async (ticker) => {
+const crawlData = async (ticker) => {
     const _url = `http://shortvolumes.com/?t=${ticker}`;
 
     const { getHtml } = require('../../../models/index');
     const { tryParseFloat } = require('../../aux/index');
     const html = await getHtml(_url);
+    logger.trace({ 'shortvolume html input': { ticker: html}});
 
     /**
      * local function to parse ratio
@@ -27,6 +28,8 @@ const getData = async (ticker) => {
             return []; // empty
         }
         str = str.replace(startStr, '').replace(']);', '');
+        logger.debug({'shortvolume data': {ticker: str}});
+
         const unprocessedRows = str.split('],');
         const table = [];
         for (let i = 0; i < unprocessedRows.length; i++) {
@@ -34,10 +37,6 @@ const getData = async (ticker) => {
             let cells = unprocessedRows[i].replaceAll(']', '').replaceAll('[', '').replaceAll(`'`, '').split(',');
             // process each cell
             cells = cells.map(e => tryParseFloat(e.trim()));
-            // convert last cell from percentage to 0.xx
-            if (i > 0) {
-                cells[cells.length - 1] = (cells[cells.length - 1]) ? tryParseFloat(cells[cells.length - 1]) / 100 : '';
-            }
             // push a row to the table
             table.push(cells);
         }
@@ -47,25 +46,53 @@ const getData = async (ticker) => {
 };
 
 /**
+ * Get all data of a ticker
+ * @param {string} ticker 
+ * @return {dict} all data
+ */
+const getData = async (ticker) => {
+    const result = {};
+    const data = await crawlData(ticker);
+
+    if (data.length > 1 && data[0].length > 0) {
+        const header = data[0];
+        const rows = data.slice(1);
+        for (const row of rows) {
+            const dict = {};
+            for (let i = 1; i < header.length && header[0] === 'Date'; i++) {
+                dict[header[i]] = row[i];
+            }
+            result[row[0]] = dict;
+        }
+    }
+    logger.info({ shortvolume: result });
+    return result;
+};
+
+/**
  * Get latest data of a ticker
  * @param {string} ticker 
  * @return {dict} latest data
  */
 const getLatestData = async (ticker) => {
-    const dict = {};
-    const data = await getData(ticker);
-    if (data.length > 1) {
+    const result = {};
+    const data = await crawlData(ticker);
+
+    if (data.length > 1 && data[0].length > 0) {
+        const dict = {};
         const header = data[0];
-        const row = data[data.length - 1];
-        for (let i = 0; i < header.length; i++) {
-            dict[header[i]] = row[i];
+        const lastRow = data[data.length - 1];
+        for (let i = 1; i < header.length && header[0] === 'Date'; i++) {
+            dict[header[i]] = lastRow[i];
         }
+        result[lastRow[0]] = dict;
     }
-    logger.info({shortvolume:dict});
-    return dict;
+    logger.info({ shortvolume: result });
+    return result;
 };
 
 module.exports = {
+    crawlData: crawlData,
     getData: getData,
     getLatestData: getLatestData,
 };

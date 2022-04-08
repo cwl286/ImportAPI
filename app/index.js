@@ -28,7 +28,7 @@ if (config.session.store === 'REDIS' || config.session.store === 'redis') {
     },
   );
   redisClient.connect()
-    .then(() => { console.log(`Successfully connected REDIS ${config.session.storeUrl}`) })
+    .then(() => {console.log(`Successfully connected REDIS ${config.session.storeUrl}`);})
     .catch((error) => {
       console.error(error);
       throw new customErrors.APIError(

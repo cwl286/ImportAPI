@@ -44,25 +44,15 @@ describe('/api/v2/queryticker() real test', () => {
         requester.close();
     });
 
-    it('GET "api/v2/queryticker" finviz method', async function () {
+    it('GET "api/v2/queryticker" method', async function () {
         const url = `${apiUrl}?apikey=${apikey}&ticker=${ticker}`;
         const res = await requester.get(url);
         expect(res.status).to.be.equal(200);
         expect(res.body.isSuccess).to.be.equal(true);
+        // should call the crawling methods with some results
         expect(Object.keys(res.body.result.finviz).length).to.be.greaterThan(0);
-    });
-    it('GET "api/v2/queryticker" method: stockanalysis', async function () {
-        const url = `${apiUrl}?apikey=${apikey}&ticker=${ticker}`;
-        const res = await requester.get(url);
-        expect(res.status).to.be.equal(200);
-        expect(res.body.isSuccess).to.be.equal(true);
         expect(Object.keys(res.body.result.stockanalysis).length).to.be.greaterThan(0);
-    });
-    it('GET "api/v2/queryticker" method: shortvolume', async function () {
-        const url = `${apiUrl}?apikey=${apikey}&ticker=${ticker}`;
-        const res = await requester.get(url);
-        expect(res.status).to.be.equal(200);
-        expect(res.body.isSuccess).to.be.equal(true);
         expect(Object.keys(res.body.result.shortvolume).length).to.be.greaterThan(0);
+        expect(Object.keys(res.body.result.marketwatch).length).to.be.greaterThan(0);
     });
 });

@@ -49,14 +49,12 @@ e.g. {isSussess:boolean, result:"<table></table>"}
 ```
 // JSON response
 {   isSussess:boolean, 
-    result: {"type": "stocks",
-        "symbol": "aapl",
+    result: {
+        "type": "stocks",
         "ticker": "AAPL",
         "name": "Apple",
         "nameFull": "Apple Inc.",
         "exchange": "NASDAQ",
-        "isOTC": false,
-        "isIpo": false,
         ...
         }
 }
@@ -73,21 +71,40 @@ e.g. {isSussess:boolean, result:"<table></table>"}
 ```
 // JSON response in terms of million
 {   isSussess:boolean, 
-    result:"finviz": {
-            "Index": "DJIA S&P500",
-            "P/E": 28.53,
-            "EPS (ttm)": 6.02,
-            ...},
-            "stockanalysis": {
-            "P/FCF Ratio": 27.53,
-            "P/OCF Ratio": 24.98,
-            "EV/Sales Ratio": 7.57,
+    result: {
+            "finviz": {
             ...},
             "shortvolume": {
-            "Date": "2022-04-06",
-            "Short Volume": 22342529,
-            "Long Volume": 26690959,
             ...},
+            "stockanalysis": {
+            ...},
+            "marketwatch": {
+            ...},
+        }
+}
+```
+
+**queryticker (current quarter)**
+> GET: [/api/v2/queryticker/current?apikey=XXXXX&ticker=aapl]()
+
+> POST: [/api/v2/queryticker/current]()
+> // In request body: { "apikey":"XXXXX", "ticker:aapl"}
+ 
+- ticker – stock ticker e.g. AAPL, MSFT
+
+```
+// JSON response in terms of million
+{   isSussess:boolean, 
+    result: {
+            "finviz": {
+            ...},
+            "shortvolume": {
+            ...},
+            "stockanalysis": {
+            ...},
+            "marketwatch": {
+            ...},
+        }
 }
 ```
 

@@ -5,4 +5,5 @@ module.exports = {
     getStockAnalysis: require('./stockanalysis').getData,
     getStockAnalysisLatest: require('./stockanalysis').getLatestData,
     getProfile: require('./stockanalysis').getProfile,
+    Estimates: require('./marketwatch').Estimates,
 };

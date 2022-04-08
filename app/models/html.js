@@ -19,13 +19,13 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.361`;
 const getHtmlByPT = async function (url) {
     try {
         // set arguments
-        let optionArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
+        const optionArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
         if (config.puppeteer.proxyUrl) {
             const newProxyUrl = await proxyChain.anonymizeProxy({ proxyUrl: config.puppeteer.proxyUrl });
             optionArgs.push(`--proxy-server=${newProxyUrl}`);
         }
         // puppeteer launch options
-        let options = {
+        const options = {
             headless: true,
             args: optionArgs,
             ignoreHTTPSErrors: true,
