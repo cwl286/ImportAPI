@@ -26,13 +26,13 @@ const queryRatio = async function (ticker) {
  * @return {string}
  */
 const queryCurrentRatio = async function (ticker) {
-    const { Estimates, getFinviz, getStockAnalysisLatest, getShortVolumeLatest } = require('../../fetch/ticker/index');
+    const { estimates, getFinviz, getStockAnalysisLatest, getShortVolumeLatest } = require('../../fetch/ticker/index');
     try {        
         return {
             finviz: await getFinviz(ticker),
             stockanalysis: await getStockAnalysisLatest(ticker),
             shortvolume: await getShortVolumeLatest(ticker),
-            marketwatch: await Estimates.getCurrentEstimates(ticker),
+            marketwatch: await estimates.getCurrentEstimates(ticker),
         };
     } catch (err) {
         throw new customErrors.APIError(`queryCurrentRatio ${err}`);

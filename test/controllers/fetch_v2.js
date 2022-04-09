@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
 
-describe('fetch/routes/v2/queryProfile() stimulation', function () {
+describe('fetch/routes/v2/queryRatio() stimulation', function () {
     let stubFunc;
 
     before(function () {
@@ -30,16 +30,38 @@ describe('fetch/routes/v2/queryProfile() stimulation', function () {
 });
 
 describe('fetch/routes/v2/queryRatio() real test', function () {
-    it('query queryRatio ', async function () {
+    it('query queryRatio Correct ticker', async function () {
         const { queryRatio } = require('../../app/controllers/routes/v2/query');
         const ticker = 'aapl';
         const res = await queryRatio(ticker);
         assert.isObject(res, 'not an object');
         assert(Object.keys(res).length > 0, 'empty result');
-        // from finviz
-        expect(res.finviz['Index']).to.be.equal('DJIA S&P500');
-        // from stockanalysis
-        expect(res.stockanalysis['Market Cap Growth']).to.be.equal('-');
+        expect(res['finviz']['Current']['Index']).to.be.equal('DJIA S&P500');
+        expect(res['stockanalysis']['Current']['Market Cap Growth']).to.be.equal('-');
+    });
+
+    it('query queryRatio Incorrect ticker ', async function () {
+        const { queryRatio } = require('../../app/controllers/routes/v2/query');
+        const ticker = 'wrongticker';
+        const res = await queryRatio(ticker);
+        console.log(res);
+        assert.isObject(res, 'not an object');
+        expect(Object.keys(res['marketwatch']).length).to.be.equal(0);
+        expect(Object.keys(res['finviz']).length).to.be.equal(0);
+        expect(Object.keys(res['stockanalysis']).length).to.be.equal(0);
+        expect(Object.keys(res['shortvolume']).length).to.be.equal(0);
+    });
+
+    it('query queryCurrentRatio Incorrect ticker ', async function () {
+        const { queryCurrentRatio } = require('../../app/controllers/routes/v2/query');
+        const ticker = 'wrongticker';
+        const res = await queryCurrentRatio(ticker);
+        console.log(res);
+        assert.isObject(res, 'not an object');
+        expect(Object.keys(res['marketwatch']).length).to.be.equal(0);
+        expect(Object.keys(res['finviz']).length).to.be.equal(0);
+        expect(Object.keys(res['stockanalysis']).length).to.be.equal(0);
+        expect(Object.keys(res['shortvolume']).length).to.be.equal(0);
     });
 });
 
