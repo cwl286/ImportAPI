@@ -1,5 +1,7 @@
 const passport = require('../../authorization/index').passport;
 const {customErrors} = require('../../error/index');
+const { Timeframe } = require('../../fetch/ticker/index');
+
 
 /**
  * authenticate apikey by Passport
@@ -52,7 +54,27 @@ const queryMiddleware = () => {
     };
 };
 
+/**
+ * middleware to check the params in if they have timeframe for query
+ * if they have, preprocess params.
+ * @return {function} or redirect
+ */
+ const queryStatMiddleware = () => {
+    return function (req, res, next) {
+        if (!req.params['timeFrameInput'] && !req.body.ticker) {
+            const msg = 'Missing timeframe or ticker';
+            throw new customErrors.BadRequestError(msg);
+        } else {
+            const keys = Object.keys(Timeframe);
+            const input = req.params['timeFrameInput'].toString().toUpperCase();
+            req.params['timeframe'] = keys.indexOf(input);
+            return next();
+        }
+    };
+};
+
 module.exports = {
     authMiddleware: authMiddleware,
     queryMiddleware: queryMiddleware,
+    queryStatMiddleware: queryStatMiddleware,
 };

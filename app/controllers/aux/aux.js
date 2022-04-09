@@ -11,29 +11,10 @@ const isValidUrl = function (str) {
     }
     return true;
 };
-/**
- * convert financial number to math number 
- * e.g. '(1000)' -> '-1000'
- * '-'  ->  ''
- * '1,000' -> '1000'
- * @param {string} str 
- * @return {string}
- */
-const finToMathFormat = function (str) {
-    if (!str) {
-        return '';
-    }
-    else if (str == '-') {
-        // //  '-'  ->  '0'
-        return str.replace('-', '');
-    }
-    // (1000) -> -1000
-    return str.replaceAll(',', '').replace('(', '-').replace(')', '');
-};
 
 /**
  * convert to million base
- * e.g. 1B -> 1000
+ * e.g. 1B -> 1000, 
  * 1K -> 0.001
  * 1M -> 1
  * @param {string} str 
@@ -66,7 +47,6 @@ const tryParseFloat = function (input) {
         return input;
     }
     const str = input.toString().replaceAll(',', '');
-
     if (!isNaN(str)) {
         // e.g. 15,000
         return Math.round(parseFloat(str)*10000)/10000;
@@ -77,6 +57,27 @@ const tryParseFloat = function (input) {
         return (!isNaN(v))? v : input;
     }
     return input;
+};
+
+/**
+ * convert financial number to math number 
+ * e.g. '(1000)' -> '-1000', '-'  ->  0, '1,000' -> '1000'
+ * @param {string} str 
+ * @return {string}
+ */
+ const finToMathFormat = function (str) {
+    if (!str) {
+        return '';
+    } else if (str === '-') {
+        return null;
+    }
+    const finds = str.match(/([0-9.,]+[TBMK]?)/g);
+    if (finds) {
+        for (const f of finds) {
+            str = (!isNaN(f.replace(/[TBMK,]+/g, ''))) ? str.replaceAll(`(${f})`, `-${f}`) : str; 
+        }
+    }    
+    return str;
 };
 
 /**

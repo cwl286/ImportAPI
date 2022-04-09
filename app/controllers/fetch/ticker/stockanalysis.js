@@ -16,16 +16,17 @@ const crawlData = async (ticker) => {
     const html = await getHtml(_url);
     logger.trace({ 'stockanalysis html input': { ticker: html}});
 
+    let table = (html)? queryDOM(html, 'table', 0) : '';
+    table = table.replaceAll('&', '&amp;').replaceAll('/n', '').replaceAll('xmlns="http://www.w3.org/2000/svg"', '');
+    logger.debug({'stockanalysis DOM table': {ticker: table.toString()}});
+
     /**
      * local function to parse ratio
-     * @param {string} html 
+     * @param {string} table 
      * @return {Array} 2d array of table
      */
-    function _parseRatio(html) {
+    function _parseRatio(table) {
         let result = [];
-        let table = queryDOM(html, 'table', 0);
-        table = table.replaceAll('&', '&amp;').replaceAll('/n', '').replaceAll('xmlns="http://www.w3.org/2000/svg"', '');
-        logger.debug({'stockanalysis DOM table': {ticker: table.toString()}});
 
         // process thead row
         const ths = xpath.fromPageSource(table).findElements('//thead//*[text()]');
@@ -50,7 +51,7 @@ const crawlData = async (ticker) => {
         // last row is dummy on this website        
         return result.slice(0, result.length - 1);
     }
-    return (html) ? _parseRatio(html) : [];
+    return (table) ? _parseRatio(table) : [];
 };
 
 /**
@@ -61,7 +62,11 @@ const crawlData = async (ticker) => {
  const getData = async (ticker) => {
     const result = {};
     const data = await crawlData(ticker);
-
+    /* 
+    * to convert a table, which is in terms of arrays, into an Object of objects
+    * e.g. [[header, header, header, header...][DATE, data, data, data...],[DATE, data, data...],[DATE, data, data...]]
+    * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
+    */
     if (data.length > 1 && data[0].length > 0) {
         const header = data[0];
         // slice because first row is header
@@ -86,6 +91,11 @@ const crawlData = async (ticker) => {
 const getLatestData = async (ticker) => {
     const result = {};
     const data = await crawlData(ticker);
+    /* 
+    * to convert a table, which is in terms of arrays, into an Object of objects
+    * e.g. [[header, header, header, header...][DATE, data, data, data...],[DATE, data, data...],[DATE, data, data...]]
+    * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
+    */
     if (data.length > 1 && data[0].length > 0) {
         const dict = {};
         const header = data[0];

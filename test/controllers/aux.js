@@ -21,31 +21,41 @@ describe('controllers/aux finToMathFormat()', function () {
 
     it('convert to math format (10)', async function () {
         const res = finToMathFormat('(10)');
-        assert.equal(res, '-10', 'should be same');
+        expect(res).to.be.equal('-10');
     });
 
     it('convert to math format (1,000)', async function () {
         const res = finToMathFormat('(1,000)');
-        assert.equal(res, '-1000', 'should be same');
+        expect(res).to.be.equal('-1,000');
+    });
+
+    it('convert to math format (1,000.99)', async function () {
+        const res = finToMathFormat('(1,000.99)');
+        expect(res).to.be.equal('-1,000.99');
     });
 
     it('convert to math format (10B)', async function () {
         const res = finToMathFormat('(10B)');
-        assert.equal(res, '-10B', 'should be same');
+        expect(res).to.be.equal('-10B');
     });
 
     it('no change "-"', async function () {
         const res = finToMathFormat('-');
-        assert.equal(res, '', 'should be zero');
+        expect(res).to.be.equal(null);
     });
 
     it('no change "-3.10%"', async function () {
         const res = finToMathFormat('-3.10%');
-        assert.equal(res, '-3.10%', 'should be no change');
+        expect(res).to.be.equal('-3.10%');
     });
     it('no change ""', async function () {
         const res = finToMathFormat('');
-        assert.equal(res, '', 'should be no change');
+        expect(res).to.be.equal('');
+    });
+    
+    it('testing long string', async function () {
+        const res = finToMathFormat('testing long string (text)');
+        expect(res).to.be.equal('testing long string (text)');
     });
 });
 

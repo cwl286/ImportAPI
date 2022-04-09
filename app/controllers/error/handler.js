@@ -17,16 +17,12 @@ class ErrorHandler {
     }
 
     /**
-     * Check if it is operational
+     * Check if it is customError type and operational
      * @param {Error} err 
      * @return {boolean}
      */
     isTrustedError(err) {
-        // if it is a customError type
-        if (err instanceof BaseError) {
-            return err.isOperational;
-        }
-        return false;
+        return (err instanceof BaseError)? err.isOperational : false;
     }
 }
 module.exports.errorHandler = new ErrorHandler();

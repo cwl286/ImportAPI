@@ -14,18 +14,21 @@ const getData = async (ticker) => {
     const { customErrors } = require('../../error/index');
     const { toMilBase, finToMathFormat, tryParseFloat } = require('../../aux/index');
     
+    // download html
     const html = await getHtml(_url);
     logger.trace({ 'finviz html input': { ticker: html}});
 
+    // query table
+    const table = (html) ? queryDOM(html, 'table', 8) : '';
+    logger.debug({'finviz DOM table': {ticker: table.toString()}});
+
     /**
      * local function to parse ratio
-     * @param {string} html 
+     * @param {string} table 
      * @return {object}
      */
-    function _parseRatio(html) {
+    function _parseRatio(table) {
         const dict = {};
-        const table = queryDOM(html, 'table', 8);
-        logger.debug({'finviz DOM table': {ticker: table.toString()}});
         
         let tdKeys = [], tdValues = [];
         try {
@@ -52,7 +55,7 @@ const getData = async (ticker) => {
         logger.info({ finviz: result });
         return result;
     }
-    return (html) ? _parseRatio(html) : {};
+    return (table) ? _parseRatio(table) : {};
 };
 
 module.exports = getData;

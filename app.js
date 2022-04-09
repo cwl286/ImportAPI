@@ -15,10 +15,12 @@ process.on('uncaughtException', (err) => {
   // shut down if fail to solve
   if (!errorHandler.isTrustedError(err)) {
     server.close(() => {
+      console.log(`server is shutting down. `);
       process.exit(1);
     });
     // shut down the process completely if not done after 1 seconds
     setTimeout(() => {
+      console.log(`Force the server to shut donw!`);
       process.abort();
     }, 1000).unref();
   }
