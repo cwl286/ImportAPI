@@ -56,11 +56,33 @@ class Statement {
     }
 
     /**
+     * local function to query the currency of tables
+     * header > .small
+     * @param {string} str a DOM
+     * @return {string} currency
+     */
+     _findCurrency (str) {
+        let currency = '';
+        try {
+            const nodes = xpath.fromPageSource(str).findElements('//header//*[@class="small"]');
+            logger.trace({ 'marketwatch DOM _findCurrency': { ticker: nodes.toString() } });
+            for (const node of nodes) {
+                const finds = node.getText().match(/([A-Z]{3})/g);
+                if (finds.length > 0) {
+                    currency = finds[0];
+                    break;
+                }
+            }
+        } catch (err) {
+            throw new customErrors.APIError('_findCurrency Error', err.toString());
+        }
+        return currency;
+    }
+
+    /**
      * local aux function to convert a table, which is in terms of arrays, into an Object of objects
-     * e.g. [[header, header, header, header...][DATE, data, data, data...],[DATE, data, data...],[DATE, data, data...]]
-     * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
      * e.g. [[DATE, DATE, DATE...], [header, data, data,...], [header, data, data,...], [header, data, data,...]]
-     * to: {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
+     * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,..}}}
      * @param {Array} table a 2d array repsentating rows of a table
      * @return {Object} object of objects
      */
@@ -109,7 +131,7 @@ class Statement {
                 continue;
             }
             const quarters = (row.length > 3) ? row.slice(row.length - 4) : [];
-            const sumTTM = quarters.reduce((prev, current) => {return (current)? prev + current : prev}, 0);
+            const sumTTM = quarters.reduce((prev, current) => {return (current)? prev + current : prev;}, 0);
             dict[key] = (sumTTM)? tryParseFloat(sumTTM) : sumTTM;
         }
 
@@ -274,13 +296,10 @@ class CashFlow extends Statement {
         switch (timeframe) {
             case Timeframe.ANNUAL:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/cash-flow`;
-                break;
             case Timeframe.QUARTER:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/cash-flow/quarter`;
-                break;
             case Timeframe.TTM:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/cash-flow/quarter`;
-                break;
             default:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/cash-flow`;
         }
@@ -331,6 +350,9 @@ class CashFlow extends Statement {
                 dict[key] = (table) ? super._conversion(table) : {};
             }
         }
+        // Add currency info
+        dict['Currency'] = (html)? super._findCurrency(html) : '';
+
         logger.info({ 'marketwatch getCashFlow': { ticker: dict } });
         return dict;
     }
@@ -361,13 +383,10 @@ class CashFlow extends Statement {
         switch (timeframe) {
             case Timeframe.ANNUAL:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income`;
-                break;
             case Timeframe.QUARTER:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income/quarter`;
-                break;
             case Timeframe.TTM:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income/quarter`;
-                break;
             default:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income`;
         }
@@ -418,6 +437,9 @@ class CashFlow extends Statement {
                 dict[key] = (table) ? super._conversion(table) : {};
             }
         }
+        // Add currency info
+        dict['Currency'] = (html)? super._findCurrency(html) : '';
+
         logger.info({ 'marketwatch getIncomeStat': { ticker: dict } });
         return dict;
     }
@@ -434,7 +456,7 @@ class CashFlow extends Statement {
         super();
         this._tableNames = {
             0: 'Assets',
-            1: "Liabilities & Shareholders' Equity",
+            1: `Liabilities & Shareholders' Equity`,
         };
         // table 5 = Assets table, table 6 = Liabilities & Shareholders' Equity
         this._targetIndexes = [4, 5];
@@ -449,13 +471,10 @@ class CashFlow extends Statement {
         switch (timeframe) {
             case Timeframe.ANNUAL:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet`;
-                break;
             case Timeframe.QUARTER:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet/quarter`;
-                break;
             case Timeframe.TTM:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet/quarter`;
-                break;
             default:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet`;
         }
@@ -481,6 +500,7 @@ class CashFlow extends Statement {
             // first and last column are dummy on this website's tables, so remove it
             dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
         }
+
         return dict;
     }
 
@@ -498,10 +518,12 @@ class CashFlow extends Statement {
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
-
             // transpose table and convert to dict 
             dict[key] = (table) ? super._conversion(table) : {};
         }
+        // Add currency info
+        dict['Currency'] = (html)? super._findCurrency(html) : '';
+
         logger.info({ 'marketwatch getBalanceSheet': { ticker: dict } });
         return dict;
     }

@@ -7,13 +7,13 @@ const { Timeframe } = require('../../fetch/ticker/index');
  * @return {string}
  */
 const queryRatio = async function (ticker) {
-    const { Estimates, getFinviz, getStockAnalysis, getShortVolume } = require('../../fetch/ticker/index');     
+    const { estimates, getFinviz, getStockAnalysis, getShortVolume } = require('../../fetch/ticker/index');     
     try {               
         return {
             finviz: await getFinviz(ticker),
             stockanalysis: await getStockAnalysis(ticker),
             shortvolume: await getShortVolume(ticker),
-            marketwatch: await Estimates.getEstimates(ticker),
+            marketwatch: await estimates.getEstimates(ticker),
         };
     } catch (err) {
         throw new customErrors.APIError(`queryRatio ${err}`);
@@ -67,7 +67,7 @@ const queryProfile = async function (ticker) {
             'Cash Flow': await cashFlow.getCashFlow(ticker, timeFrame),
             'Income Statement': await incomeStat.getIncomeStat(ticker, timeFrame),
             'Balance Sheet': await balanceSheet.getBalanceSheet(ticker, timeFrame),
-        }
+        };
     } catch (err) {
         throw new customErrors.APIError(`queryStatement ${err}`);
     }
