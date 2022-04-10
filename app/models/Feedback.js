@@ -1,7 +1,7 @@
 /**
  * Class to build json response
  */
-class Feedback {
+ class Feedback {
     /**
      * @constructs feedback for building json response
      * @param {boolean} isSuccess successful or not.

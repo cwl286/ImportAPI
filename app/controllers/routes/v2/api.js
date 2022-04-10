@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { authMiddleware, queryMiddleware, queryStatMiddleware } = require('./middleware');
-const Feedback = require('../../feedback');
+const { Feedback } = require('../../../models/index');
 const { queryRatio, queryCurrentRatio, queryProfile, queryStatement } = require('./query');
 
 // for passport.authenticate by GET method

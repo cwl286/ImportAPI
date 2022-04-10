@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { authMiddleware, importHtmlMiddleware, importXmlMiddleware } = require('./middleware');
-const Feedback = require('../../feedback');
+const { Feedback } = require('../../../models/index');
 const { importHtml, importXML } = require('./import');
 
 // for passport.authenticate by GET method

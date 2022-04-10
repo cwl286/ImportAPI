@@ -1,5 +1,5 @@
 const xpath = require('xpath-html');
-const { arrayToObject, transpose } = require('../../aux/aux');
+const { arrayToObject, tryParseFloat } = require('../../aux/index');
 const { logger } = require('../../logger/index');
 
 /**
@@ -12,7 +12,6 @@ const crawlData = async (ticker) => {
 
     const { getHtml } = require('../../../models/index');
     const { queryDOM } = require('../query/index');
-    const { transpose, tryParseFloat } = require('../../aux/index');
     
     const html = await getHtml(_url);
     logger.trace({ 'stockanalysis html input': { ticker: html}});

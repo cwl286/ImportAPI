@@ -4,9 +4,10 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const helmet = require('helmet');
 
-const { apiRouterV1, apiRouterV2, initAuth, initAccessLogger, Feedback,
-  errorHandler, customErrors } = require('./controllers/index');
+const { apiRouterV1, apiRouterV2, initAuth, initAccessLogger, errorHandler, customErrors } = require('./controllers/index');
+const { Feedback } = require('./models/index');
 const { config } = require('./config/index');
+
 const app = express();
 
 // security middlewares

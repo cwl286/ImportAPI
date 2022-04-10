@@ -1,5 +1,4 @@
 module.exports = {
-  Feedback: require('./feedback'),
   initAuth: require('./authorization/index').init,
   apiRouterV1: require('./routes/index').apiRouterV1,
   apiRouterV2: require('./routes/index').apiRouterV2,
