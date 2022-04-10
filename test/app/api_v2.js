@@ -6,7 +6,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const { assert, expect } = chai;
 
-describe.skip('/api/v2/queryprofile() real test', () => {
+describe('/api/v2/queryprofile() real test', () => {
     const apiUrl = '/api/v2/queryprofile';
 
     const apikey = 'AbHTJFYu0QDsr9u6Ax0i';
@@ -29,7 +29,7 @@ describe.skip('/api/v2/queryprofile() real test', () => {
     });
 });
 
-describe.skip('/api/v2/queryticker() real test', () => {
+describe('/api/v2/queryticker() real test', () => {
     const apiUrl = '/api/v2/queryticker';
 
     const apikey = 'AbHTJFYu0QDsr9u6Ax0i';
@@ -58,7 +58,7 @@ describe.skip('/api/v2/queryticker() real test', () => {
 });
 
 
-describe.skip('/api/v2/queryprofile/current() real test', () => {
+describe('/api/v2/queryprofile/current() real test', () => {
     const apiUrl = '/api/v2/querystatement/current/';
 
     const apikey = 'AbHTJFYu0QDsr9u6Ax0i';

@@ -1,4 +1,5 @@
 const xpath = require('xpath-html');
+const { arrayToObject, transpose } = require('../../aux/aux');
 const { logger } = require('../../logger/index');
 
 /**
@@ -32,6 +33,8 @@ const crawlData = async (ticker) => {
         const ths = xpath.fromPageSource(table).findElements('//thead//*[text()]');
         let processedRow = [];
         ths.forEach(th => processedRow.push(th.getText()));
+        // last column is dummy on this website
+        processedRow = processedRow.slice(0, processedRow.length - 1);
         result.push(processedRow);
 
         // process tbody rows
@@ -40,18 +43,14 @@ const crawlData = async (ticker) => {
             processedRow = [];
             const tds = xpath.fromNode(tr).findElements('//*[text()]');
             // Conver to number type if possible, otherwise return itself
-            tds.forEach(td => processedRow.push(tryParseFloat(td.getText())));
+            tds.forEach(td => processedRow.push(tryParseFloat(td.getText().trim())));
+            // last column is dummy on this website     
+            processedRow = processedRow.slice(0, processedRow.length - 1);
             result.push(processedRow);
         }
-        // process header (first row)
-        result = transpose(result);
-        if (result.length > 0) {
-            result[0] = result[0].map(x => x.trim());
-        }
-        // last row is dummy on this website        
-        return result.slice(0, result.length - 1);
+        return result;
     }
-    return (table) ? _parseRatio(table) : [];
+    return (table)? _parseRatio(table) : [];
 };
 
 /**
@@ -60,24 +59,11 @@ const crawlData = async (ticker) => {
  * @return {object} all data
  */
  const getData = async (ticker) => {
-    const result = {};
+    let result = {};
     const data = await crawlData(ticker);
-    /* 
-    * to convert a table, which is in terms of arrays, into an Object of objects
-    * e.g. [[header, header, header, header...][DATE, data, data, data...],[DATE, data, data...],[DATE, data, data...]]
-    * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
-    */
+    // to convert a table, which is in terms of arrays, into an Object of objects
     if (data.length > 1 && data[0].length > 0) {
-        const header = data[0];
-        // slice because first row is header
-        const rows = data.slice(1);
-        for (const row of rows) {
-            const dict = {};
-            for (let i = 1; i < header.length; i++) {
-                dict[header[i]] = row[i];
-            }
-            result[row[0]] = dict;
-        }
+        result = arrayToObject(data);
     }
     logger.info({ stockanalysis: result });
     return result;
@@ -89,23 +75,11 @@ const crawlData = async (ticker) => {
  * @return {object} latest data
  */
 const getLatestData = async (ticker) => {
-    const result = {};
-    const data = await crawlData(ticker);
-    /* 
-    * to convert a table, which is in terms of arrays, into an Object of objects
-    * e.g. [[header, header, header, header...][DATE, data, data, data...],[DATE, data, data...],[DATE, data, data...]]
-    * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
-    */
-    if (data.length > 1 && data[0].length > 0) {
-        const dict = {};
-        const header = data[0];
-        const row = data[1];
-        for (let i = 1; i < header.length; i++) {
-            dict[header[i]] = row[i];
-        }
-        result[row[0]] = dict;
+    let result = {};
+    const data = await getData(ticker);
+    if (Object.keys(data).includes('Current')) {
+        result['Current'] = data['Current'];
     }
-    logger.info({ stockanalysis: result });
     return result;
 };
 

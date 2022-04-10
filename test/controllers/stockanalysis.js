@@ -19,33 +19,39 @@ describe('fetch/ratio/shortanalysis stimulate getStockAnalysis()', function () {
         stubFunc.restore();
     });
 
-    it('query ALL ratio in ARRAY format', async function () {
+    it('tes crawlData() in ARRAY format', async function () {
         const { crawlData } = require('../../app/controllers/fetch/ticker/stockanalysis');
         const ticker = 'aapl';
 
         const res = await crawlData(ticker);
         assert.isArray(res, 'not an array');
 
-        // compare header
-        const header = ['Quarter Ended', 'Market Capitalization', 'Market Cap Growth', 'Enterprise Value',
+        expect(res.length).to.be.equal(16);
+        expect(res[0].length).to.be.equal(39);
+
+        // compare first column
+        const col = ['Quarter Ended', 'Market Capitalization', 'Market Cap Growth', 'Enterprise Value',
             'PE Ratio', 'PS Ratio', 'PB Ratio', 'Debt / Equity Ratio', 'Current Ratio', 'Asset Turnover',
             'Earnings Yield', 'FCF Yield', 'Dividend Yield', 'Payout Ratio',
             'Buyback Yield / Dilution', 'Total Shareholder Return'
         ];
-        expect(res[0]).deep.to.equal(header);
+        for (let i = 0; i < res.length; i++) {
+            expect(res[i][0]).deep.to.equal(col[i]);
+        }
 
-        // expect 1 header row +  38 body rows 
-        expect(res.length).deep.to.equal(39);
-
-        // first row
-        const currentRow = ['Current', 2883148, '-', 2942033, 29.37, 7.62,
-            40.08, 1.71, 1.04, 1.08, 0.0349, 0.0353, 0.005, 0.142, 0.0347, 0.0397];
-        expect(res[1]).deep.to.equal(currentRow);
+        // compare second column
+        const col2 =  ['Current', 2883148, '-', 2942033, 29.37, 7.62,
+        40.08, 1.71, 1.04, 1.08, 0.0349, 0.0353, 0.005, 0.142, 0.0347, 0.0397];
+        for (let i = 0; i < res.length; i++) {
+            expect(res[i][1]).deep.to.equal(col2[i]);
+        }
 
         // last row
-        const lastRow = ['2012-12-29', 479363, '-', 439543, 11.48, 2.91, 3.76, 0, 1.54, '-',
+        const col3 = ['2012-12-29', 479363, '-', 439543, 11.48, 2.91, 3.76, 0, 1.54, '-',
             0.0273, 0.0437, 0.0052, 0.191, -0.006, -0.0008];
-        expect(res[res.length - 1]).deep.to.equal(lastRow);
+        for (let i = 0; i < res.length; i++) {
+            expect(res[i][38]).deep.to.equal(col3[i]);
+        }
     });
 
     it('query ALL ratio in dict format', async function () {

@@ -49,12 +49,12 @@ const tryParseFloat = function (input) {
     const str = input.toString().replaceAll(',', '');
     if (!isNaN(str)) {
         // e.g. 15,000
-        return Math.round(parseFloat(str)*10000)/10000;
+        return Math.round(parseFloat(str) * 10000) / 10000;
     } else if (str.indexOf('%') == str.length - 1) {
         // e.g. 15%
         let v = parseFloat(str) / 100;
-        v = Math.round(v * 10000)/10000;
-        return (!isNaN(v))? v : input;
+        v = Math.round(v * 10000) / 10000;
+        return (!isNaN(v)) ? v : input;
     }
     return input;
 };
@@ -65,7 +65,7 @@ const tryParseFloat = function (input) {
  * @param {string} str 
  * @return {string}
  */
- const finToMathFormat = function (str) {
+const finToMathFormat = function (str) {
     if (!str) {
         return '';
     } else if (str === '-') {
@@ -74,9 +74,9 @@ const tryParseFloat = function (input) {
     const finds = str.match(/([0-9.,]+[TBMK]?)/g);
     if (finds) {
         for (const f of finds) {
-            str = (!isNaN(f.replace(/[TBMK,]+/g, ''))) ? str.replaceAll(`(${f})`, `-${f}`) : str; 
+            str = (!isNaN(f.replace(/[TBMK,]+/g, ''))) ? str.replaceAll(`(${f})`, `-${f}`) : str;
         }
-    }    
+    }
     return str;
 };
 
@@ -86,7 +86,7 @@ const tryParseFloat = function (input) {
  * @return {Array}
  */
 const transpose = function (arr) {
-    return arr[0].map((_, colIndex) => arr.map(row => row[colIndex])); 
+    return arr[0].map((_, colIndex) => arr.map(row => row[colIndex]));
 };
 
 /**
@@ -95,15 +95,48 @@ const transpose = function (arr) {
  * @param {string} target target string
  * @return {Array} array of number
  */
-const indexesOf = function(str, target) {
+const indexesOf = function (str, target) {
     const startingIndices = [];
     let indexOccurence = str.indexOf(target, 0);
     while (indexOccurence >= 0) {
         startingIndices.push(indexOccurence);
         indexOccurence = str.indexOf(target, indexOccurence + 1);
     }
-    return startingIndices; 
+    return startingIndices;
 };
+
+/**
+ * Aux function to convert an array of arrays into an object of objects
+ * e.g. from:
+ * ['1a', '1b', '1c', '1d'],
+ * ['2a', '2b', '2c', '2d'],
+ * ['3a', '3b', '3c', '3d']
+ * e.g. To: 
+ * {1b: {2a: 2b, 3a: 3b}}
+ * {1c: {2a: 2c, 3a: 3c}}
+ * {1d: {2a: 2d, 3a: 3d}}
+ * @param {Array} arr a 2d array repsentating rows of a table
+ * @return {Object} object of objects
+ */
+const arrayToObject = (arr) => {
+    if (!arr) {
+        return {};
+    } else if (arr.length === 0) {
+        return {};
+    } else if (arr[0] === 0) {
+        return {};
+    }
+    const dict = {};
+    const headers = arr[0].slice(1);
+    arr.slice(1).map((row, _) => {
+        row.slice(1).map((cell, colIndex) => {
+            const $ = {};
+            $[row[0]] = cell;
+            dict[headers[colIndex]] = { ...dict[headers[colIndex]], ...$ };
+        });
+    });
+    return dict;
+}
 
 module.exports = {
     toMilBase: toMilBase,
@@ -112,4 +145,5 @@ module.exports = {
     tryParseFloat: tryParseFloat,
     transpose: transpose,
     indexesOf: indexesOf,
+    arrayToObject: arrayToObject,
 };

@@ -1,13 +1,16 @@
 const xpath = require('xpath-html');
 const { logger } = require('../../logger/index');
 const { customErrors } = require('../../error/index');
-const { tryParseFloat, toMilBase, finToMathFormat, transpose, indexesOf } = require('../../aux/index');
+const { tryParseFloat, toMilBase, finToMathFormat, arrayToObject, indexesOf } = require('../../aux/index');
 const Timeframe = require('./Timeframe');
+const { header } = require('express/lib/request');
 
 /**
  * class with function for processing varies statement tables
  */
 class Statement {
+    
+
     /**
      * function to download tables
      * @param {string} url 
@@ -81,36 +84,15 @@ class Statement {
 
     /**
      * local aux function to convert a table, which is in terms of arrays, into an Object of objects
-     * e.g. [[DATE, DATE, DATE...], [header, data, data,...], [header, data, data,...], [header, data, data,...]]
-     * {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,..}}}
-     * @param {Array} table a 2d array repsentating rows of a table
-     * @return {Object} object of objects
-     */
-    _conversion(table) {
-        if (!table || table.length === 0) {
-            return {};
-        }
-        table = transpose(table);
-        const result = {};
-        if (table.length > 1 && table[0].length > 0) {
-            const header = table[0];
-            const rows = table.slice(1);
-            for (const row of rows) {
-                const dict = {};
-                for (let i = 1; i < header.length; i++) {
-                    dict[header[i]] = row[i];
-                }
-                result[row[0]] = dict;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * local aux function to convert a table, which is in terms of arrays, into an Object of objects
-     * TTM is the sum of the previous 4 quarters
-     * e.g. [[DATE, DATE, DATE...], [header, data, data,...], [header, data, data,...], [header, data, data,...]]
-     * to: {{DATE: {header: data, header: data, header: data,...}}, {DATE: {header: data, header: data, header: data,...}}}
+     * Calculate TTM is the sum of the previous 4 quarters
+     * From: 
+     * ['1a', '1b', '1c', '1d', '1e', '1f'],
+     * ['2a', 2, 2, 2, 2, 1],
+     * ['3a', 3, 3, 3, 3, 1],
+     * ['4a', 4, 4, 4, 4, 1]
+     * To: 
+     * {1e: {2a: 8. 3a: 9, 4a: 16}}
+     * {1f: {2a: 7. 3a: 8, 4a: 15}}
      * @param {Array} table a 2d array repsentating rows of a table
      * @param {Array} exceptions keywords to skip the TTM summation 
      * @return {Object} object of objects
@@ -119,32 +101,52 @@ class Statement {
         if (!table || table.length === 0) {
             return {};
         }
-        const firstRow = table[0];
-        const currentColIndex = firstRow.length - 1; // assume last column is current date
-        const currentDate = firstRow[currentColIndex];
-        const rows = table.slice(1, table.length - 1);
+        const oldHeader = table[0];
+        const oldRows = table.slice(1, table.length - 1);
 
-        const dict = {};
-        // Value to check the whole column of the currentDate is ready
-        let isReady = false;
-        let prevValue = (rows.length > 0) ? rows[0][currentColIndex] : null;
-        for (const row of rows) {
-            const key = row[0];
-            if (!isReady && prevValue != row[currentColIndex]) {
-                isReady = true;
+        const newTable = [];
+        const newHeader = [];
+        for (let i = oldHeader.length - 1; i -3 >= 1; i--) {
+            newHeader.unshift(oldHeader[i]);
+        }    
+        newHeader.unshift('');
+        newTable.push(newHeader);
+
+        // Aux dicts help check the whole column is ready as sometimes the data is not ready
+        const auxDict = {};
+        const isReadyDict = {};
+        newHeader.forEach(h => isReadyDict[h] = false);
+
+        for (const oldRow of oldRows) {
+            const name = oldRow[0];
+            if (exceptions.some( ex => name.indexOf(ex) != -1)) {
+                continue; // some data is invalid for TTM calculation
             }
-            prevValue = row[currentColIndex];
-            if (exceptions.some( ex => key.indexOf(ex) != -1)) {
-                continue;
+            let parsedRow = [];   // Create new rows
+            for (let i = oldRow.length - 1; i -3 >= 1; i--) {
+                if (!auxDict[oldHeader[i]]) {
+                    // init aux dict
+                    auxDict[oldHeader[i]] = oldRow[i];
+                }  else if (!isReadyDict[oldHeader[i]] && auxDict[oldHeader[i]] != oldRow[i]) {
+                    isReadyDict[oldHeader[i]] = true;
+                }
+                auxDict[oldHeader[i]] = oldRow[i];
+
+                const quarters = oldRow.slice(i -3, i + 1); // 4 quarters
+                const sum = quarters.reduce((prev, current) => {return (current)? prev + current : prev;}, 0);
+                parsedRow.unshift(tryParseFloat(sum));
             }
-            const quarters = (row.length > 3) ? row.slice(row.length - 4) : [];
-            const sumTTM = quarters.reduce((prev, current) => {return (current)? prev + current : prev;}, 0);
-            dict[key] = (sumTTM)? tryParseFloat(sumTTM) : sumTTM;
+            parsedRow.unshift(name);
+            newTable.push(parsedRow);
         }
 
-        const result = {};
-        result[currentDate] = dict;
-        return (isReady) ? result : {};
+        let result = arrayToObject(newTable);
+        for (const key in isReadyDict) {
+            if (!isReadyDict[key]) {
+                delete result[key];
+            }
+        }        
+        return result;
     }
 }
 
@@ -208,8 +210,8 @@ class Statement {
         for (const key in dict) {
             // get table in terms of array
             const table = dict[key];
-            // transpose table and convert to dict 
-            dict[key] = (table) ? super._conversion(table) : {};
+            // convert a array of arrays into an object of objects 
+            dict[key] = (table) ? arrayToObject(table) : {};
         }
 
         logger.info({ 'marketwatch getEstimates': { ticker: dict } });
@@ -247,7 +249,7 @@ class Statement {
         const table0 = dict[tableNames[0]];
         if (table0) {
             const currentYear = _findCururentYear(table0[0]); // locate current year
-            const orgdict0 = super._conversion(table0); // transpose table and convert to dict 
+            const orgdict0 = arrayToObject(table0); // convert a array of arrays into an object of objects 
             const newdict0 = {}; // reduce the org dict to current year
             newdict0[currentYear] = orgdict0[currentYear];
             dict[tableNames[0]] = newdict0;
@@ -256,7 +258,7 @@ class Statement {
         const table1 = dict[tableNames[1]];
         if (table1) {
             const lastQuarter = table1[0][table1[0].length - 1]; // locate last quarter        
-            const orgdict1 = super._conversion(table1); // transpose table and convert to dict 
+            const orgdict1 = arrayToObject(table1); // convert a array of arrays into an object of objects 
             const newdict1 = {}; // reduce the org dict to last quarter
             newdict1[lastQuarter] = orgdict1[lastQuarter];
             dict[tableNames[1]] = newdict1;
@@ -265,7 +267,7 @@ class Statement {
         const table2 = dict[tableNames[2]];
         if (table2) {
             const nextQuarter = table2[0][1]; // locate next quarter        
-            const orgdict2 = super._conversion(table2); // transpose table and convert to dict 
+            const orgdict2 = arrayToObject(table2); // convert a array of arrays into an object of objects 
             const newdict2 = {}; // reduce the org dict to next quarter
             newdict2[nextQuarter] = orgdict2[nextQuarter];
             dict[tableNames[2]] = newdict2;
@@ -356,10 +358,10 @@ class CashFlow extends Statement {
             // get table, which is in terms of array data type
             const table = dict[key];
             if (timeframe == Timeframe.TTM) {
-                // transpose table and convert to dict 
+                // convert a array of arrays into an object of objects 
                 dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', '/']);
             } else {
-                dict[key] = super._conversion(table);
+                dict[key] = arrayToObject(table);
             }
         }
         // Add currency info
@@ -445,11 +447,11 @@ class CashFlow extends Statement {
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
+            // convert a array of arrays into an object of objects
             if (timeframe == Timeframe.TTM) {
-                // transpose table and convert to dict 
                 dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', 'Margin']);
             } else {
-                dict[key] = super._conversion(table);
+                dict[key] = arrayToObject(table);
             }
         }
         // Add currency info
@@ -540,7 +542,7 @@ class CashFlow extends Statement {
             if (!table) {
                 continue;
             } else {
-                dict[key] = super._conversion(table);
+                dict[key] = arrayToObject(table);
             }
         }
         // Add currency info

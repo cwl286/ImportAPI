@@ -5,4 +5,5 @@ module.exports = {
     finToMathFormat: require('./aux').finToMathFormat,
     tryParseFloat: require('./aux').tryParseFloat,
     indexesOf: require('./aux').indexesOf,
+    arrayToObject: require('./aux').arrayToObject,
 };
