@@ -171,7 +171,6 @@ describe('fetch/ratio/stockanalysis real getProfile()', function () {
         const ticker = 'wrongticker';
 
         const res = await getProfile(ticker);
-
         assert.isObject(res, 'not an object');
         expect(res['nameFull']).to.be.equal(undefined);
         expect(res['info']).to.be.equal(undefined);

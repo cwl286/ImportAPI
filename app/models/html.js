@@ -76,7 +76,7 @@ const getHtmlByAxios = async function (url) {
 
     return axios.get(url, { headers: { 'User-Agent': newUserAgent } })
         .then((res) => {
-            if (res.status == 200) {
+            if (res.status == 200 && res.data.toString().indexOf('Cloudflare') === -1) {
                 return res.data;
             }
             throw new customErrors.BadRequestError(name = 'Axios Error',
