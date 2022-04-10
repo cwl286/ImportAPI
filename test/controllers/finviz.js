@@ -1,6 +1,7 @@
 const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
+const exp = require('constants');
 
 describe('fetch/ratio/finviz stimulate 1st getFinviz()', function () {
     let stubFunc;
@@ -25,11 +26,11 @@ describe('fetch/ratio/finviz stimulate 1st getFinviz()', function () {
 
         const res = await getFinviz(ticker);
 
-        assert.isObject(res['Current'], 'not a object');
-        assert.equal(res['Current']['Income'], 100560, 'incorrect income');
-        assert.equal(res['Current']['EPS next Y'], 0.0647, 'incorrect epsnexty');
-        assert.equal(res['Current']['Earnings'], 'Jan 27 AMC', 'incorrect date');
-        assert.equal(res['Current']['Volatility'], '1.82% 2.59%', 'incorrect volatility');
+        assert.isObject(res, 'not a object');
+        assert.equal(res['Income'], 100560, 'incorrect income');
+        assert.equal(res['EPS next Y'], 0.0647, 'incorrect epsnexty');
+        assert.equal(res['Earnings'], 'Jan 27 AMC', 'incorrect date');
+        assert.equal(res['Volatility'], '1.82% 2.59%', 'incorrect volatility');
     });
 });
 
@@ -56,23 +57,31 @@ describe('fetch/ratio/finviz stimulate 2nd getFinviz()', function () {
 
         const res = await getFinviz(ticker);
 
-        assert.isObject(res['Current'], 'not a object');
-        assert.equal(res['Current']['Index'], '', 'incorrect index');
-        assert.equal(res['Current']['Optionable'], 'Yes', 'incorrect optionable');
-        assert.equal(res['Current']['52W High'], -0.5986, 'incorrect 52whigh');
-        assert.equal(res['Current']['Debt/Eq'], 0.03, 'incorrect Debt/Eq');
+        assert.isObject(res, 'not a object');
+        assert.equal(res['Index'], '', 'incorrect index');
+        assert.equal(res['Optionable'], 'Yes', 'incorrect optionable');
+        assert.equal(res['52W High'], -0.5986, 'incorrect 52whigh');
+        assert.equal(res['Debt/Eq'], 0.03, 'incorrect Debt/Eq');
     });
 });
 
 describe('fetch/ratio/finviz real test getFinviz()', function () {
-    it('query Finviz without error', async function () {
+    it('query Finviz correct ticker', async function () {
         const { getFinviz } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
 
         const res = await getFinviz(ticker);
 
-        assert.isObject(res['Current'], 'not an object');
-        expect(res['Current']['Index']).to.be.equal('DJIA S&P500');
+        assert.isObject(res, 'not an object');
+        expect(res['Index']).to.be.equal('DJIA S&P500');
+    });
+
+    it('query Finviz incorrect ticker', async function () {
+        const { getFinviz } = require('../../app/controllers/fetch/ticker/index');
+        const ticker = 'wrongticker';
+
+        const res = await getFinviz(ticker);
+        expect(Object.keys(res).length).to.be.equal(0);
     });
 });
 

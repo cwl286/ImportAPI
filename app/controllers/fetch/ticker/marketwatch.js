@@ -52,7 +52,7 @@ class Statement {
         } catch (err) {
             throw new customErrors.APIError('_parseTable Error', err.toString());
         }
-        return result;
+        return (result.length > 0)? result : [];
     }
 
     /**
@@ -87,6 +87,9 @@ class Statement {
      * @return {Object} object of objects
      */
     _conversion(table) {
+        if (!table || table.length === 0) {
+            return {};
+        }
         table = transpose(table);
         const result = {};
         if (table.length > 1 && table[0].length > 0) {
@@ -113,10 +116,14 @@ class Statement {
      * @return {Object} object of objects
      */
     _conversionTTM(table, exceptions = ['Growth', 'Yield', 'Change', 'Margin']) {
+        if (!table || table.length === 0) {
+            return {};
+        }
         const firstRow = table[0];
         const currentColIndex = firstRow.length - 1; // assume last column is current date
         const currentDate = firstRow[currentColIndex];
         const rows = table.slice(1, table.length - 1);
+
         const dict = {};
         // Value to check the whole column of the currentDate is ready
         let isReady = false;
@@ -183,7 +190,7 @@ class Statement {
                 dict[this._tableNames[i]] = (table)? super._parseTable(table.toString()) : [];
             }
         } catch (err) {
-            throw new customErrors.APIError('_parseHtml Error', err.toString());
+            throw new customErrors.APIError('Estimates _parseHtml Error', err.toString());
         }
         return dict;
     }
@@ -309,6 +316,7 @@ class CashFlow extends Statement {
      * local function to parse html
      * @param {string} html estimates web
      * @return {object} object of tables, where tables are in terms of arrays
+     * return null if no table
      */
     _parseHtml(html) {
         const dict = {};
@@ -317,13 +325,18 @@ class CashFlow extends Statement {
         const indexes1 = indexesOf(html, '<table');
         const indexes2 = indexesOf(html, '</table>');
 
-        for (let i = 0; i < this._targetIndexes.length; i++) {
-            const j = this._targetIndexes[i];
-            const tableStr = html.substring(indexes1[j], indexes2[j] + 8);
-            logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
-            const table = (tableStr)? super._parseTable(tableStr) : [];
-            // first and last column are dummy on this website's tables, so remove it
-            dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
+        try {
+            for (let i = 0; i < this._targetIndexes.length; i++) {
+                const j = this._targetIndexes[i];
+                const tableStr = html.substring(indexes1[j], indexes2[j] + 8);
+                logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
+                // set as null if not string
+                const table = (tableStr)? super._parseTable(tableStr) : [];
+                // first and last column are dummy on this website's tables, so remove it
+                dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
+            }
+        } catch (err) {
+            throw new customErrors.APIError('CashFlow _parseHtml Error', err.toString());
         }
         return dict;
     }
@@ -342,12 +355,11 @@ class CashFlow extends Statement {
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
-
-            // transpose table and convert to dict 
             if (timeframe == Timeframe.TTM) {
-                dict[key] = (table) ? super._conversionTTM(table, ['Growth', 'Yield', 'Change', '/']) : {};
+                // transpose table and convert to dict 
+                dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', '/']);
             } else {
-                dict[key] = (table) ? super._conversion(table) : {};
+                dict[key] = super._conversion(table);
             }
         }
         // Add currency info
@@ -396,21 +408,25 @@ class CashFlow extends Statement {
      * local function to parse html
      * @param {string} html estimates web
      * @return {object} object of tables, where tables are in terms of arrays
+     * return dict of null if no table
      */
     _parseHtml(html) {
         const dict = {};
         // Replace ill-format from the website
         const indexes1 = indexesOf(html, '<table');
         const indexes2 = indexesOf(html, '</table>');
-
-        for (let i = 0; i < this._targetIndexes.length; i++) {
-            const j = this._targetIndexes[i];
-            let tableStr = html.substring(indexes1[j], indexes2[j] + 8);
-            tableStr = tableStr.replaceAll('aria=label', 'xxx').replaceAll('<div></div>', '</div></div>');
-            logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
-            const table = (tableStr)? super._parseTable(tableStr) : [];
-            // first and last column are dummy on this website's tables, so remove it
-            dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
+        try {
+            for (let i = 0; i < this._targetIndexes.length; i++) {
+                const j = this._targetIndexes[i];
+                let tableStr = html.substring(indexes1[j], indexes2[j] + 8);
+                tableStr = tableStr.replaceAll('aria=label', 'xxx').replaceAll('<div></div>', '</div></div>');
+                logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
+                const table = (tableStr)? super._parseTable(tableStr) : [];
+                // first and last column are dummy on this website's tables, so remove it
+                dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
+            }
+        } catch (err) {
+            throw new customErrors.APIError('Incomestat _parseHtml Error', err.toString());
         }
         return dict;
     }
@@ -429,12 +445,11 @@ class CashFlow extends Statement {
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
-
-            // transpose table and convert to dict 
             if (timeframe == Timeframe.TTM) {
-                dict[key] = (table) ? super._conversionTTM(table, ['Growth', 'Yield', 'Change', 'Margin']) : {};
+                // transpose table and convert to dict 
+                dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', 'Margin']);
             } else {
-                dict[key] = (table) ? super._conversion(table) : {};
+                dict[key] = super._conversion(table);
             }
         }
         // Add currency info
@@ -490,15 +505,19 @@ class CashFlow extends Statement {
         // Replace ill-format from the website
         const indexes1 = indexesOf(html, '<table');
         const indexes2 = indexesOf(html, '</table>');
-
-        for (let i = 0; i < this._targetIndexes.length; i++) {
-            const j = this._targetIndexes[i];
-            let tableStr = html.substring(indexes1[j], indexes2[j] + 8);
-            tableStr = tableStr.replaceAll('aria=label', 'xxx').replaceAll('<div></div>', '</div></div>');
-            logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
-            const table = (tableStr)? super._parseTable(tableStr) : [];
-            // first and last column are dummy on this website's tables, so remove it
-            dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
+        
+        try {
+            for (let i = 0; i < this._targetIndexes.length; i++) {
+                const j = this._targetIndexes[i];
+                let tableStr = html.substring(indexes1[j], indexes2[j] + 8);
+                tableStr = tableStr.replaceAll('aria=label', 'xxx').replaceAll('<div></div>', '</div></div>');
+                logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
+                const table = (tableStr)? super._parseTable(tableStr) : [];
+                // first and last column are dummy on this website's tables, so remove it
+                dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
+            }
+        } catch (err) {
+            throw new customErrors.APIError('Balancesheet _parseHtml Error', err.toString());
         }
 
         return dict;
@@ -518,8 +537,11 @@ class CashFlow extends Statement {
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
-            // transpose table and convert to dict 
-            dict[key] = (table) ? super._conversion(table) : {};
+            if (!table) {
+                continue;
+            } else {
+                dict[key] = super._conversion(table);
+            }
         }
         // Add currency info
         dict['Currency'] = (html)? super._findCurrency(html) : '';

@@ -51,7 +51,7 @@ const getData = async (ticker) => {
 
             dict[key] = value;
         }
-        const result = { Current: dict };
+        const result = dict;
         logger.info({ finviz: result });
         return result;
     }

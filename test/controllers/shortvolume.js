@@ -65,7 +65,7 @@ describe('fetch/ratio/shortvolume stimulate getShortVolume()', function () {
 
 
 describe('fetch/ratio/shortvolume real test getShortVolumeLatest()', function () {
-    it('query ShortVolume without error', async function () {
+    it('query ShortVolume correct key', async function () {
         const { getShortVolumeLatest } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
 
@@ -77,5 +77,15 @@ describe('fetch/ratio/shortvolume real test getShortVolumeLatest()', function ()
         // this child dict contain a dict with 3 keys
         const childKeys = Object.keys(res[keys[0]]);
         expect(childKeys.length).to.be.equal(3);
+    });
+
+    it('query ShortVolume INCORRECT key', async function () {
+        const { getShortVolumeLatest } = require('../../app/controllers/fetch/ticker/index');
+        const ticker = 'wrongticker';
+
+        const res = await getShortVolumeLatest(ticker);
+        // one dict with the latest date as the only one key
+        const keys = Object.keys(res);
+        expect(keys.length).to.be.equal(0);
     });
 });

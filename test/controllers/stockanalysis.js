@@ -94,7 +94,7 @@ describe('fetch/ratio/shortanalysis stimulate getStockAnalysis()', function () {
 
 
 describe('fetch/ratio/stockanalysis real test getStockAnalysisLatest()', function () {
-    it('query StockAnalysis without error', async function () {
+    it('query StockAnalysis correct ticker', async function () {
         const { getStockAnalysisLatest } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
 
@@ -112,6 +112,15 @@ describe('fetch/ratio/stockanalysis real test getStockAnalysisLatest()', functio
         for (const h of header) {
             assert(childKeys.includes(h), `cannot find child key ${h}`);
         }
+    });
+
+    it('query StockAnalysis Incorrect ticker', async function () {
+        const { getStockAnalysisLatest } = require('../../app/controllers/fetch/ticker/index');
+        const ticker = 'wrongticker';
+
+        const res = await getStockAnalysisLatest(ticker);
+        const keys = Object.keys(res);
+        expect(keys.length).to.be.equal(0);
     });
 });
 
@@ -145,8 +154,8 @@ describe('fetch/ratio/stockanalysis stimulate getProfile()', function () {
     });
 });
 
-describe('fetch/ratio/stockanalysis real test getProfile()', function () {
-    it('query profile', async function () {
+describe('fetch/ratio/stockanalysis real getProfile()', function () {
+    it('query profile correct ticker', async function () {
         const { getProfile } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
 
@@ -155,5 +164,16 @@ describe('fetch/ratio/stockanalysis real test getProfile()', function () {
         assert.isObject(res, 'not an object');
         expect(res['nameFull']).deep.to.equal('Microsoft Corporation');
         expect(res['info']['sector']).deep.to.equal('Information Technology');
+    });
+
+    it('query profile Incorrect ticker', async function () {
+        const { getProfile } = require('../../app/controllers/fetch/ticker/index');
+        const ticker = 'wrongticker';
+
+        const res = await getProfile(ticker);
+
+        assert.isObject(res, 'not an object');
+        expect(res['nameFull']).to.be.equal(undefined);
+        expect(res['info']).to.be.equal(undefined);
     });
 });
