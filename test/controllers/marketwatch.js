@@ -250,9 +250,11 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
 
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(169.99);
 
         const currency = res['Currency'];
         expect(currency).to.be.deep.equal('USD');
@@ -310,11 +312,14 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
         
         const currency = res['Currency'];
         expect(currency).to.be.deep.equal('USD');
+
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(170.00);
 
         // test each section
         const OA = res[sections[0]];
@@ -350,7 +355,7 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
 
         // test each section: sum of four quarters
@@ -399,11 +404,14 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
 
         const currency = res['Currency'];
         expect(currency).to.be.deep.equal('USD');
+
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(1.9700);
         
         // test each section
         const OA = res[sections[0]];
@@ -439,11 +447,15 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
 
         const currency = res['Currency'];
         expect(currency).to.be.deep.equal('USD');
+
+
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(1.9700);
 
         // test each section: sum of four quarters
         const OA = res[sections[0]];
@@ -493,7 +505,7 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Income Statement', 'Currency'];
+        const sections = ['Income Statement', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
         
         const sec1 = res[sections[0]];
@@ -532,8 +544,11 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Income Statement', 'Currency'];
+        const sections = ['Income Statement', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
+
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(169.79);
         
         const sec1 = res[sections[0]];
         expect(sec1['31-Dec-2021']['Sales/Revenue']).to.be.equal(123950);
@@ -550,7 +565,7 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Income Statement', 'Currency'];
+        const sections = ['Income Statement', 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
         
         const sec1 = res[sections[0]];
@@ -590,10 +605,13 @@ describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 1', function () {
 
         const currency = res['Currency'];
         expect(currency).to.be.deep.equal('USD');
+
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(169.79);
         
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Currency'];
+        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
         
         
@@ -637,11 +655,14 @@ describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Currency'];
+        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Currency', 'Price'];
         expect(keys).to.be.deep.equal(sections);
 
         const currency = res['Currency'];
         expect(currency).to.be.deep.equal('USD');
+
+        const price = res['Price'];
+        expect(price).to.be.deep.equal(169.79);
         
         const sec1 = res[sections[0]];
         expect(sec1['2021']['Cash & Short Term Investments']).to.be.equal(62640);

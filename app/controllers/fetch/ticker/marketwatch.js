@@ -59,15 +59,40 @@ class Statement {
     }
 
     /**
+     * local function to find latest price 
+     * header > .small
+     * @param {string} html a DOM
+     * @return {number} price
+     */
+     _findPrice (html) {
+        let price = '';
+        try {
+            const query = '//div[@class="intraday__data"]//*[@class="value"]';
+            const nodes = xpath.fromPageSource(html).findElements(query);
+            logger.trace({ 'marketwatch DOM _findCurrency': { ticker: nodes.toString() } });
+            for (const node of nodes) {
+                const val = tryParseFloat(node.getText());
+                if (!Number.isNaN(val)) {
+                    price = val;
+                    break;
+                }
+            }
+        } catch (err) {
+            throw new customErrors.APIError('_findPrice Error', err.toString());
+        }
+        return price;
+    }
+
+    /**
      * local function to query the currency of tables
      * header > .small
-     * @param {string} str a DOM
+     * @param {string} html a DOM
      * @return {string} currency
      */
-     _findCurrency (str) {
+     _findCurrency (html) {
         let currency = '';
         try {
-            const nodes = xpath.fromPageSource(str).findElements('//header//*[@class="small"]');
+            const nodes = xpath.fromPageSource(html).findElements('//header//*[@class="small"]');
             logger.trace({ 'marketwatch DOM _findCurrency': { ticker: nodes.toString() } });
             for (const node of nodes) {
                 const finds = node.getText().match(/([A-Z]{3})/g);
@@ -366,6 +391,7 @@ class CashFlow extends Statement {
         }
         // Add currency info
         dict['Currency'] = (html)? super._findCurrency(html) : '';
+        dict['Price'] = (html)? super._findPrice(html) : '';
 
         logger.info({ 'marketwatch getCashFlow': { ticker: dict } });
         return dict;
@@ -456,6 +482,7 @@ class CashFlow extends Statement {
         }
         // Add currency info
         dict['Currency'] = (html)? super._findCurrency(html) : '';
+        dict['Price'] = (html)? super._findPrice(html) : '';
 
         logger.info({ 'marketwatch getIncomeStat': { ticker: dict } });
         return dict;
@@ -547,6 +574,7 @@ class CashFlow extends Statement {
         }
         // Add currency info
         dict['Currency'] = (html)? super._findCurrency(html) : '';
+        dict['Price'] = (html)? super._findPrice(html) : '';
 
         logger.info({ 'marketwatch getBalanceSheet': { ticker: dict } });
         return dict;
