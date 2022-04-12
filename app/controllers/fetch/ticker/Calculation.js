@@ -115,12 +115,13 @@ class Calculation {
         }
         // EV
         if (data['Market Capitalization']) {
-            data['EV'] = data['Market Capitalization'] +
-                data['Preferred Stock (Carrying Value)'] +
-                data['ST Debt & Current Portion LT Debt'] +
-                data['Long-Term Debt'] +
-                data['Accumulated Minority Interest'] -
-                data['Cash & Short Term Investments'];
+            const a = data['Market Capitalization'];
+            const b = data['Preferred Stock (Carrying Value)'] || 0;
+            const c = data['ST Debt & Current Portion LT Debt'];
+            const d = data['Long-Term Debt'];
+            const e = data['Accumulated Minority Interest'] || 0;
+            const f = data['Cash & Short Term Investments'];
+            data['EV'] = a + b + c + d + e - f;
             result['EV'] = data['EV'];
         }
         // Calculate PE Ratio
