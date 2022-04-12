@@ -31,7 +31,7 @@ class Calculation {
         } else if (!this._BS['Data Currency'] && !this._IS['Data Currency'] && !this._CF['Data Currency']) {
             return false;
         }
-
+        
         if (Object.keys(this._BS).length == 0 ||
             Object.keys(this._CF).length == 0 ||
             Object.keys(this._IS).length == 0) {
@@ -125,7 +125,7 @@ class Calculation {
             result['EV'] = data['EV'];
         }
         // Calculate PE Ratio
-        if (data['Price'] && data['EPS (Diluted)']) {
+        if (data['Price'] && data['EPS (Diluted)'] && data['Currency'] == 'USD') {
             result['PE ratio'] = data['Price'] / data['EPS (Diluted)'];
         }
         // Calculate P/OCF Ratio

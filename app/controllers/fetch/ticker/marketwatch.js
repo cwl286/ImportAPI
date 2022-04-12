@@ -69,7 +69,7 @@ class Statement {
             logger.trace({ 'marketwatch DOM _findCurrency': { ticker: nodes.toString() } });
             for (const node of nodes) {
                 const val = tryParseFloat(node.getText());
-                if (!Number.isNaN(val)) {
+                if (val && !Number.isNaN(val)) {
                     price = val;
                     break;
                 }
@@ -93,7 +93,7 @@ class Statement {
             logger.trace({ 'marketwatch DOM _findCurrency': { ticker: nodes.toString() } });
             for (const node of nodes) {
                 const finds = node.getText().match(/([A-Z]{3})/g);
-                if (finds.length > 0) {
+                if (finds && finds.length > 0) {
                     currency = finds[0];
                     break;
                 }

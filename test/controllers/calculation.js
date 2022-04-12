@@ -79,3 +79,22 @@ describe('fetch/ticker/Calcuation stimulate Calculation()', function () {
         expect(Object.keys(res).length).to.be.equal(21);
     });
 });
+
+
+
+describe('fetch/ticker/Calcuation real Calculation()', function () {
+    it('REAL calcualtion calculate()', async function () {
+        const { balanceSheet, cashFlow, incomeStat } = require('../../app/controllers/fetch/ticker/index');
+        const ticker = 'hsbc';
+        const BS = await balanceSheet.getBalanceSheet(ticker, 3);
+        const CF = await cashFlow.getCashFlow(ticker, 2);
+        const IS = await incomeStat.getIncomeStat(ticker, 4);
+
+        const Calcuation = require('../../app/controllers/fetch/ticker/Calculation');        
+        const cal = new Calcuation(BS, IS, CF);
+        const res = cal.calculate();
+        console.log(res);
+        // not USD
+        expect(Object.keys(res).length).to.be.equal(1);
+    });
+});
