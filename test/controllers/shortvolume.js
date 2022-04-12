@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
 
-describe('fetch/ratio/shortvolume stimulate getShortVolume()', function () {
+describe('fetch/ticker/shortvolume stimulate getShortVolume()', function () {
     let stubFunc;
 
     before(function () {
@@ -64,7 +64,7 @@ describe('fetch/ratio/shortvolume stimulate getShortVolume()', function () {
 });
 
 
-describe('fetch/ratio/shortvolume real test getShortVolumeLatest()', function () {
+describe('fetch/ticker/shortvolume real test getShortVolumeLatest()', function () {
     it('query ShortVolume correct key', async function () {
         const { getShortVolumeLatest } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';

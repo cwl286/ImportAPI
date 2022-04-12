@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { authMiddleware, queryMiddleware, queryStatMiddleware } = require('./middleware');
 const { Feedback } = require('../../../models/index');
-const { queryRatio, queryCurrentRatio, queryProfile, queryStatement } = require('./query');
+const { queryRatio, queryCurrentRatio, queryProfile, queryStatement, queryCalculation } = require('./query');
 
 // for passport.authenticate by GET method
 // since passport.authenticate only allow POST
@@ -56,6 +56,19 @@ const responeStatement = () => {
     };
 };
 
+const responseCalculation = () => {
+    return async (req, res, next) => {
+        try {
+            // res.params['timeframe] is created in queryStatMiddleware()
+            const data = await queryCalculation(req.body.ticker);
+            res.status(200).json(new Feedback(true, data));
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+
 // "/api/v?/queryticker"
 router.route('/queryticker')
     .get(authMiddleware(), queryMiddleware(), responseRatio())
@@ -76,5 +89,9 @@ router.route('/querystatement*/:timeFrameInput')
     .get(authMiddleware(), queryStatMiddleware(), responeStatement())
     .post(authMiddleware(), queryStatMiddleware(), responeStatement());
 
+// "/api/v?/querycalculation"
+router.route('/querycalculation')
+    .get(authMiddleware(), queryMiddleware(), responseCalculation())
+    .post(authMiddleware(), queryMiddleware(), responseCalculation());
 
 module.exports = router;

@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
 
-describe('fetch/routes/v1/import/ stimulation', function () {
+describe('controllers/v1/import/ stimulation', function () {
     let stubFunc;
 
     before(function () {
@@ -35,7 +35,7 @@ describe('fetch/routes/v1/import/ stimulation', function () {
     });
 });
 
-describe('fetch/routes/v1 stimulate importXML()', function () {
+describe('controllers/v1 stimulate importXML()', function () {
     let stubFunc;
 
     before(function () {

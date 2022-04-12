@@ -9,5 +9,6 @@ module.exports = {
     cashFlow: require('./marketwatch').cashFlow,
     incomeStat: require('./marketwatch').incomeStat,
     balanceSheet: require('./marketwatch').balanceSheet,
-    Timeframe: require('./Timeframe')
+    Timeframe: require('./Timeframe'),
+    Calculation: require('./Calculation'),
 };

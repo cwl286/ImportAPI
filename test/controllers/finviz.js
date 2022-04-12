@@ -1,9 +1,8 @@
 const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
-const exp = require('constants');
 
-describe('fetch/ratio/finviz stimulate 1st getFinviz()', function () {
+describe('fetch/ticker/finviz stimulate 1st getFinviz()', function () {
     let stubFunc;
 
     before(function () {
@@ -34,7 +33,7 @@ describe('fetch/ratio/finviz stimulate 1st getFinviz()', function () {
     });
 });
 
-describe('fetch/ratio/finviz stimulate 2nd getFinviz()', function () {
+describe('fetch/ticker/finviz stimulate 2nd getFinviz()', function () {
     let stubFunc;
 
     before(function () {
@@ -65,7 +64,7 @@ describe('fetch/ratio/finviz stimulate 2nd getFinviz()', function () {
     });
 });
 
-describe('fetch/ratio/finviz real test getFinviz()', function () {
+describe('fetch/ticker/finviz real test getFinviz()', function () {
     it('query Finviz correct ticker', async function () {
         const { getFinviz } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';

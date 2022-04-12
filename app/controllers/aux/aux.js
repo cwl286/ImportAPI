@@ -136,7 +136,7 @@ const arrayToObject = (arr) => {
         });
     });
     return dict;
-}
+};
 
 module.exports = {
     toMilBase: toMilBase,

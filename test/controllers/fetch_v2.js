@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
 
-describe('fetch/routes/v2/queryRatio() stimulation', function () {
+describe('controllers/v2/queryRatio() stimulation', function () {
     let stubFunc;
 
     before(function () {
@@ -29,7 +29,7 @@ describe('fetch/routes/v2/queryRatio() stimulation', function () {
     });
 });
 
-describe('fetch/routes/v2/queryRatio() real test', function () {
+describe('controllers/v2/queryRatio() real test', function () {
     it('query queryRatio Correct ticker', async function () {
         const { queryRatio } = require('../../app/controllers/routes/v2/query');
         const ticker = 'aapl';
@@ -64,7 +64,7 @@ describe('fetch/routes/v2/queryRatio() real test', function () {
     });
 });
 
-describe('fetch/routes/v2/queryStatement() real test', function () {
+describe('controllers/v2/queryStatement() real test', function () {
     it('query queryStatement correct ticker', async function () {
         const { queryStatement } = require('../../app/controllers/routes/v2/query');
         const ticker = 'msft';

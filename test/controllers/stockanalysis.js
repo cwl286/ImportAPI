@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
 
-describe('fetch/ratio/shortanalysis stimulate getStockAnalysis()', function () {
+describe('fetch/ticker/shortanalysis stimulate getStockAnalysis()', function () {
     let stubFunc;
 
     before(function () {
@@ -98,8 +98,7 @@ describe('fetch/ratio/shortanalysis stimulate getStockAnalysis()', function () {
     });
 });
 
-
-describe('fetch/ratio/stockanalysis real test getStockAnalysisLatest()', function () {
+describe('fetch/ticker/stockanalysis real test getStockAnalysisLatest()', function () {
     it('query StockAnalysis correct ticker', async function () {
         const { getStockAnalysisLatest } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
@@ -130,8 +129,7 @@ describe('fetch/ratio/stockanalysis real test getStockAnalysisLatest()', functio
     });
 });
 
-
-describe('fetch/ratio/stockanalysis stimulate getProfile()', function () {
+describe('fetch/ticker/stockanalysis stimulate getProfile()', function () {
     let stubFunc;
 
     before(function () {
@@ -160,7 +158,7 @@ describe('fetch/ratio/stockanalysis stimulate getProfile()', function () {
     });
 });
 
-describe('fetch/ratio/stockanalysis real getProfile()', function () {
+describe('fetch/ticker/stockanalysis real getProfile()', function () {
     it('query profile correct ticker', async function () {
         const { getProfile } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';

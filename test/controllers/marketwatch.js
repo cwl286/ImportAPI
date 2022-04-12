@@ -3,7 +3,7 @@ const { assert, expect } = require('chai');
 const sinon = require('sinon');
 const exp = require('constants');
 
-describe('fetch/ratio/marketwatch stimulate getEstimation()', function () {
+describe('fetch/ticker/marketwatch stimulate getEstimation()', function () {
     let stubFunc;
 
     before(function () {
@@ -69,7 +69,7 @@ describe('fetch/ratio/marketwatch stimulate getEstimation()', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch real test getEstimation()', function () {
+describe('fetch/ticker/marketwatch real test getEstimation()', function () {
     it('query msft estimates and recieved 3 tables', async function () {
         const { estimates } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
@@ -159,7 +159,7 @@ describe('fetch/ratio/marketwatch real test getEstimation()', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch real test getCurrentEstimation()', function () {
+describe('fetch/ticker/marketwatch real test getCurrentEstimation()', function () {
     it('query msft current estimates and recieved 3 tables', async function () {
         const { estimates } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
@@ -223,7 +223,7 @@ describe('fetch/ratio/marketwatch real test getCurrentEstimation()', function ()
     });
 });
 
-describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
+describe('fetch/ticker/marketwatch stimulate getCashflow() 1', function () {
     let stubFunc;
 
     before(function () {
@@ -250,13 +250,13 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(169.99);
 
-        const currency = res['Currency'];
+        const currency = res['Data Currency'];
         expect(currency).to.be.deep.equal('USD');
         
         // test each section
@@ -284,7 +284,7 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
+describe('fetch/ticker/marketwatch stimulate getCashflow() 1', function () {
     let stubFunc;
 
     before(function () {
@@ -312,13 +312,13 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
         
-        const currency = res['Currency'];
+        const currency = res['Data Currency'];
         expect(currency).to.be.deep.equal('USD');
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(170.00);
 
         // test each section
@@ -355,7 +355,7 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
 
         // test each section: sum of four quarters
@@ -376,7 +376,7 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 1', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch stimulate getCashflow() 2', function () {
+describe('fetch/ticker/marketwatch stimulate getCashflow() 2', function () {
     let stubFunc;
 
     before(function () {
@@ -404,13 +404,13 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
 
-        const currency = res['Currency'];
+        const currency = res['Data Currency'];
         expect(currency).to.be.deep.equal('USD');
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(1.9700);
         
         // test each section
@@ -447,14 +447,14 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Currency', 'Price'];
+        const sections = ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
 
-        const currency = res['Currency'];
+        const currency = res['Data Currency'];
         expect(currency).to.be.deep.equal('USD');
 
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(1.9700);
 
         // test each section: sum of four quarters
@@ -478,7 +478,7 @@ describe('fetch/ratio/marketwatch stimulate getCashflow() 2', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch stimulate getIncomeStat() 1', function () {
+describe('fetch/ticker/marketwatch stimulate getIncomeStat() 1', function () {
     let stubFunc;
 
     before(function () {
@@ -505,7 +505,7 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 1', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Income Statement', 'Currency', 'Price'];
+        const sections = ['Income Statement', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
         
         const sec1 = res[sections[0]];
@@ -517,7 +517,7 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 1', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch stimulate getIncomeStat() 2', function () {
+describe('fetch/ticker/marketwatch stimulate getIncomeStat() 2', function () {
     let stubFunc;
 
     before(function () {
@@ -544,10 +544,10 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Income Statement', 'Currency', 'Price'];
+        const sections = ['Income Statement', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(169.79);
         
         const sec1 = res[sections[0]];
@@ -565,7 +565,7 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Income Statement', 'Currency', 'Price'];
+        const sections = ['Income Statement', 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
         
         const sec1 = res[sections[0]];
@@ -574,11 +574,15 @@ describe('fetch/ratio/marketwatch stimulate getIncomeStat() 2', function () {
         expect(sec1['31-Dec-2021']['EBITDA Margin']).to.be.equal(undefined);
         expect(sec1['31-Dec-2021']['SGA Growth']).to.be.equal(undefined);
         expect(sec1['31-Dec-2021']['Other Operating Expense']).to.be.equal(0);
+
+        // test exceptions
+        expect(sec1['31-Dec-2021']['Basic Shares Outstanding']).to.be.equal(16390);
+        expect(sec1['31-Dec-2021']['Diluted Shares Outstanding']).to.be.equal(16520);
     });
 });
 
 
-describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 1', function () {
+describe('fetch/ticker/marketwatch stimulate getBalanceSheet() Quarter', function () {
     let stubFunc;
 
     before(function () {
@@ -603,15 +607,46 @@ describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 1', function () {
 
         const res = await balanceSheet.getBalanceSheet(ticker, Timeframe.QUARTER);
 
-        const currency = res['Currency'];
+        const currency = res['Data Currency'];
         expect(currency).to.be.deep.equal('USD');
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(169.79);
         
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Currency', 'Price'];
+        const sections = ['Assets', `Liabilities & Shareholders' Equity`, 'Data Currency', 'Price (USD)'];
+        expect(keys).to.be.deep.equal(sections);
+        
+        
+        const sec1 = res[sections[0]];
+        expect(sec1['31-Dec-2021']['Cash & Short Term Investments']).to.be.equal(63910);
+        expect(sec1['31-Dec-2021']['Total Assets Growth']).to.be.equal(0.086);
+        expect(sec1['31-Dec-2020']['Property, Plant & Equipment - Gross']).to.be.equal(105490);
+
+
+        const sec2 = res[sections[1]];
+        expect(sec2['31-Dec-2021']['ST Debt & Current Portion LT Debt']).to.be.equal(16170);
+        expect(sec2['31-Dec-2021']['Accounts Payable Growth']).to.be.equal(0.3579);
+        expect(sec2['31-Dec-2020']['Common Equity (Total)']).to.be.equal(66220);
+    });
+
+    it('TTM special balance sheet', async function () {
+        const { balanceSheet } = require('../../app/controllers/fetch/ticker/index');
+        const Timeframe = require('../../app/controllers/fetch/ticker/Timeframe');
+        const ticker = 'aapl';       
+
+        const res = await balanceSheet.getBalanceSheet(ticker, Timeframe.TTM_BS);
+
+        const currency = res['Data Currency'];
+        expect(currency).to.be.deep.equal('USD');
+
+        const price = res['Price (USD)'];
+        expect(price).to.be.deep.equal(169.79);
+        
+        // test keys
+        const keys = Object.keys(res);
+        const sections = ['Assets', `Liabilities & Shareholders' Equity`, 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
         
         
@@ -628,7 +663,7 @@ describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 1', function () {
     });
 });
 
-describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 2', function () {
+describe('fetch/ticker/marketwatch stimulate getBalanceSheet() Year', function () {
     let stubFunc;
 
     before(function () {
@@ -655,13 +690,13 @@ describe('fetch/ratio/marketwatch stimulate getBalanceSheet() 2', function () {
 
         // test keys
         const keys = Object.keys(res);
-        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Currency', 'Price'];
+        const sections = ['Assets', "Liabilities & Shareholders' Equity", 'Data Currency', 'Price (USD)'];
         expect(keys).to.be.deep.equal(sections);
 
-        const currency = res['Currency'];
+        const currency = res['Data Currency'];
         expect(currency).to.be.deep.equal('USD');
 
-        const price = res['Price'];
+        const price = res['Price (USD)'];
         expect(price).to.be.deep.equal(169.79);
         
         const sec1 = res[sections[0]];

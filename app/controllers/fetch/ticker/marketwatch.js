@@ -3,20 +3,17 @@ const { logger } = require('../../logger/index');
 const { customErrors } = require('../../error/index');
 const { tryParseFloat, toMilBase, finToMathFormat, arrayToObject, indexesOf } = require('../../aux/index');
 const Timeframe = require('./Timeframe');
-const { header } = require('express/lib/request');
 
 /**
  * class with function for processing varies statement tables
  */
 class Statement {
-    
-
     /**
      * function to download tables
      * @param {string} url 
      * @return {string} string of html document
      */
-     async _crawl(url) {
+    async _crawl(url) {
         // download raw html
         const { getHtml } = require('../../../models/index');
         const html = await getHtml(url);
@@ -29,7 +26,7 @@ class Statement {
      * @param {string} str a string of one table
      * @return {array} table in terms of 2d array
      */
-     _parseTable (str) {
+    _parseTable(str) {
         const result = [];
         try {
             // select only one table
@@ -55,7 +52,7 @@ class Statement {
         } catch (err) {
             throw new customErrors.APIError('_parseTable Error', err.toString());
         }
-        return (result.length > 0)? result : [];
+        return (result.length > 0) ? result : [];
     }
 
     /**
@@ -64,7 +61,7 @@ class Statement {
      * @param {string} html a DOM
      * @return {number} price
      */
-     _findPrice (html) {
+    _findPrice(html) {
         let price = '';
         try {
             const query = '//div[@class="intraday__data"]//*[@class="value"]';
@@ -89,7 +86,7 @@ class Statement {
      * @param {string} html a DOM
      * @return {string} currency
      */
-     _findCurrency (html) {
+    _findCurrency(html) {
         let currency = '';
         try {
             const nodes = xpath.fromPageSource(html).findElements('//header//*[@class="small"]');
@@ -119,10 +116,11 @@ class Statement {
      * {1e: {2a: 8. 3a: 9, 4a: 16}}
      * {1f: {2a: 7. 3a: 8, 4a: 15}}
      * @param {Array} table a 2d array repsentating rows of a table
-     * @param {Array} exceptions keywords to skip the TTM summation 
+     * @param {Array} skips keywords to skip the TTM summation 
+     * @param {Array} expections keywords to retain the current date's value
      * @return {Object} object of objects
      */
-    _conversionTTM(table, exceptions = ['Growth', 'Yield', 'Change', 'Margin']) {
+    _conversionTTM(table, skips = ['Growth', 'Yield', 'Change', 'Margin'], expections = []) {
         if (!table || table.length === 0) {
             return {};
         }
@@ -131,9 +129,9 @@ class Statement {
 
         const newTable = [];
         const newHeader = [];
-        for (let i = oldHeader.length - 1; i -3 >= 1; i--) {
+        for (let i = oldHeader.length - 1; i - 3 >= 1; i--) {
             newHeader.unshift(oldHeader[i]);
-        }    
+        }
         newHeader.unshift('');
         newTable.push(newHeader);
 
@@ -144,33 +142,41 @@ class Statement {
 
         for (const oldRow of oldRows) {
             const name = oldRow[0];
-            if (exceptions.some( ex => name.indexOf(ex) != -1)) {
-                continue; // some data is invalid for TTM calculation
-            }
             let parsedRow = [];   // Create new rows
-            for (let i = oldRow.length - 1; i -3 >= 1; i--) {
+            if (skips.some(ex => name.indexOf(ex) != -1)) {
+                // skeip some data invalid for TTM calculation
+                continue; 
+            }
+            for (let i = oldRow.length - 1; i - 3 >= 1; i--) {
+                if (expections.length > 0 && expections.some(ex => name.indexOf(ex) != -1)) {
+                    // some data is unsutiable to TTM calculation, just add it
+                    parsedRow.unshift(oldRow[i]);
+                    continue; 
+                }
+                // Check if data are ready spaghetti code xD
                 if (!auxDict[oldHeader[i]]) {
                     // init aux dict
                     auxDict[oldHeader[i]] = oldRow[i];
-                }  else if (!isReadyDict[oldHeader[i]] && auxDict[oldHeader[i]] != oldRow[i]) {
+                } else if (!isReadyDict[oldHeader[i]] && auxDict[oldHeader[i]] != oldRow[i]) {
                     isReadyDict[oldHeader[i]] = true;
-                }
+                } 
                 auxDict[oldHeader[i]] = oldRow[i];
 
-                const quarters = oldRow.slice(i -3, i + 1); // 4 quarters
-                const sum = quarters.reduce((prev, current) => {return (current)? prev + current : prev;}, 0);
+                const quarters = oldRow.slice(i - 3, i + 1); // 4 quarters
+                const sum = quarters.reduce((prev, current) => { return (current) ? prev + current : prev; }, 0);
                 parsedRow.unshift(tryParseFloat(sum));
             }
             parsedRow.unshift(name);
             newTable.push(parsedRow);
         }
 
-        let result = arrayToObject(newTable);
+        const result = arrayToObject(newTable);
+        // xD
         for (const key in isReadyDict) {
             if (!isReadyDict[key]) {
                 delete result[key];
             }
-        }        
+        }
         return result;
     }
 }
@@ -178,7 +184,7 @@ class Statement {
 /**
  * class for Estimates in marketwatch
  */
- class Estimates extends Statement {
+class Estimates extends Statement {
     /**
      * constructor to define table names for estimates
      */
@@ -197,7 +203,7 @@ class Statement {
      */
     _url(ticker) {
         return `https://www.marketwatch.com/investing/stock/${ticker}/analystestimates?mod=mw_quote_tab`;
-    } 
+    }
 
     /**
      * local function to parse html
@@ -214,7 +220,7 @@ class Statement {
             logger.debug({ 'marketwatch Estimates DOM table': { ticker: tables.toString() } });
             for (let i = 0; i < tables.length; i++) {
                 const table = tables[i];
-                dict[this._tableNames[i]] = (table)? super._parseTable(table.toString()) : [];
+                dict[this._tableNames[i]] = (table) ? super._parseTable(table.toString()) : [];
             }
         } catch (err) {
             throw new customErrors.APIError('Estimates _parseHtml Error', err.toString());
@@ -231,7 +237,7 @@ class Statement {
         // download
         const html = await super._crawl(this._url(ticker));
         // get dict of raw tables 
-        const dict = (html)? this._parseHtml(html) : {};
+        const dict = (html) ? this._parseHtml(html) : {};
         for (const key in dict) {
             // get table in terms of array
             const table = dict[key];
@@ -253,7 +259,7 @@ class Statement {
         // download
         const html = await super._crawl(this._url(ticker));
         // get dict of raw tables 
-        const dict = (html)? this._parseHtml(html) : {};
+        const dict = (html) ? this._parseHtml(html) : {};
         const tableNames = this._tableNames;
         /**
          * local aux function to find the current year
@@ -358,7 +364,7 @@ class CashFlow extends Statement {
                 const tableStr = html.substring(indexes1[j], indexes2[j] + 8);
                 logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
                 // set as null if not string
-                const table = (tableStr)? super._parseTable(tableStr) : [];
+                const table = (tableStr) ? super._parseTable(tableStr) : [];
                 // first and last column are dummy on this website's tables, so remove it
                 dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
             }
@@ -374,24 +380,24 @@ class CashFlow extends Statement {
      * @param {Timeframe} timeframe default TTM
      * @return {object} object of objects
      */
-    async getCashFlow(ticker, timeframe = Timeframe.TTM) {        
+    async getCashFlow(ticker, timeframe = Timeframe.TTM) {
         // download
         const html = await super._crawl(this._url(ticker));
         // get dict of raw tables 
-        const dict = (html)? this._parseHtml(html) : {};
+        const dict = (html) ? this._parseHtml(html) : {};
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
             if (timeframe == Timeframe.TTM) {
                 // convert a array of arrays into an object of objects 
-                dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', '/']);
+                dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', '/'], []);
             } else {
                 dict[key] = arrayToObject(table);
             }
         }
         // Add currency info
-        dict['Currency'] = (html)? super._findCurrency(html) : '';
-        dict['Price'] = (html)? super._findPrice(html) : '';
+        dict['Data Currency'] = (html) ? super._findCurrency(html) : '';
+        dict['Price (USD)'] = (html) ? super._findPrice(html) : '';
 
         logger.info({ 'marketwatch getCashFlow': { ticker: dict } });
         return dict;
@@ -401,7 +407,7 @@ class CashFlow extends Statement {
 /**
  * class for Income statement page in marketwatch
  */
- class IncomeStat extends Statement {
+class IncomeStat extends Statement {
     /**
      * constructor to define table names for Cash Flow
      */
@@ -427,6 +433,8 @@ class CashFlow extends Statement {
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income/quarter`;
             case Timeframe.TTM:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income/quarter`;
+            case Timeframe.TTM_IS:
+                return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income/quarter`;
             default:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/income`;
         }
@@ -449,7 +457,7 @@ class CashFlow extends Statement {
                 let tableStr = html.substring(indexes1[j], indexes2[j] + 8);
                 tableStr = tableStr.replaceAll('aria=label', 'xxx').replaceAll('<div></div>', '</div></div>');
                 logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
-                const table = (tableStr)? super._parseTable(tableStr) : [];
+                const table = (tableStr) ? super._parseTable(tableStr) : [];
                 // first and last column are dummy on this website's tables, so remove it
                 dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
             }
@@ -457,6 +465,85 @@ class CashFlow extends Statement {
             throw new customErrors.APIError('Incomestat _parseHtml Error', err.toString());
         }
         return dict;
+    }
+
+    
+    /**
+     * local aux function to convert a table, which is in terms of arrays, into an Object of objects
+     * Calculate TTM is the sum of the previous 4 quarters
+     * @param {Array} table a 2d array repsentating rows of a table
+     * @param {Array} skips keywords to skip the TTM summation 
+     * @param {Array} expections keywords to retain the current date's value
+     * @return {Object} object of objects
+     */
+    _conversionTTM_IS(table, skips = ['Growth', 'Yield', 'Change', 'Margin'], expections = []) {
+        if (!table || table.length === 0) {
+            return {};
+        }
+        const oldHeader = table[0];
+        const oldRows = table.slice(1, table.length - 1);
+
+        const newTable = [];
+        const newHeader = [];
+        for (let i = oldHeader.length - 1; i - 3 >= 1; i--) {
+            newHeader.unshift(oldHeader[i]);
+        }
+        newHeader.unshift('');
+        newTable.push(newHeader);
+
+        // Aux dicts help check the whole column is ready as sometimes the data is not ready
+        const auxDict = {};
+        const isReadyDict = {};
+        newHeader.forEach(h => isReadyDict[h] = false);
+
+        for (const oldRow of oldRows) {
+            const name = oldRow[0];
+            const parsedRow = [];   // Create new rows
+            if (skips.some(ex => name.indexOf(ex) != -1)) {
+                // skeip some data invalid for TTM calculation
+                continue; 
+            }
+            // spaghetti xD
+            const specialRow = [];
+            for (let i = oldRow.length - 1; i - 3 >= 1; i--) {
+                if (expections.length > 0 && expections.some(ex => name.indexOf(ex) != -1)) {
+                    // some data is unsutiable to TTM calculation, just add it
+                    parsedRow.unshift(oldRow[i]);
+                    // also calculate average 
+                    const quarters = oldRow.slice(i - 3, i + 1); // 4 quarters
+                    const avg = (quarters[0] - quarters[quarters.length -1]) / quarters[0];
+                    specialRow.unshift(avg);
+                    continue; 
+                }
+                // Check if data are ready spaghetti code xD
+                if (!auxDict[oldHeader[i]]) {
+                    // init aux dict
+                    auxDict[oldHeader[i]] = oldRow[i];
+                } else if (!isReadyDict[oldHeader[i]] && auxDict[oldHeader[i]] != oldRow[i]) {
+                    isReadyDict[oldHeader[i]] = true;
+                } 
+                auxDict[oldHeader[i]] = oldRow[i];
+
+                const quarters = oldRow.slice(i - 3, i + 1); // 4 quarters
+                const sum = quarters.reduce((prev, current) => { return (current) ? prev + current : prev; }, 0);
+                parsedRow.unshift(tryParseFloat(sum));
+            }
+            parsedRow.unshift(name);
+            newTable.push(parsedRow);
+            if (specialRow.length > 0) {
+                specialRow.unshift(`Change ${name}`);
+                newTable.push(specialRow);
+            }
+        }
+
+        let result = arrayToObject(newTable);
+        // xD
+        for (const key in isReadyDict) {
+            if (!isReadyDict[key]) {
+                delete result[key];
+            }
+        }
+        return result;
     }
 
     /**
@@ -469,20 +556,22 @@ class CashFlow extends Statement {
         // download
         const html = await super._crawl(this._url(ticker));
         // get dict of raw tables 
-        const dict = (html)? this._parseHtml(html) : {};
+        const dict = (html) ? this._parseHtml(html) : {};
         for (const key in dict) {
             // get table, which is in terms of array data type
             const table = dict[key];
             // convert a array of arrays into an object of objects
             if (timeframe == Timeframe.TTM) {
-                dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', 'Margin']);
+                dict[key] = super._conversionTTM(table, ['Growth', 'Yield', 'Change', 'Margin'], ['Outstanding']);
+            } else if (timeframe == Timeframe.TTM_IS) {
+                dict[key] = this._conversionTTM_IS(table, ['Growth', 'Yield', 'Change', 'Margin'], ['Outstanding']);
             } else {
                 dict[key] = arrayToObject(table);
             }
         }
         // Add currency info
-        dict['Currency'] = (html)? super._findCurrency(html) : '';
-        dict['Price'] = (html)? super._findPrice(html) : '';
+        dict['Data Currency'] = (html) ? super._findCurrency(html) : '';
+        dict['Price (USD)'] = (html) ? super._findPrice(html) : '';
 
         logger.info({ 'marketwatch getIncomeStat': { ticker: dict } });
         return dict;
@@ -492,7 +581,7 @@ class CashFlow extends Statement {
 /**
  * class for Balance Sheet page in marketwatch
  */
- class BalanceSheet extends Statement {
+class BalanceSheet extends Statement {
     /**
      * constructor to define table names for Cash Flow
      */
@@ -519,6 +608,8 @@ class CashFlow extends Statement {
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet/quarter`;
             case Timeframe.TTM:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet/quarter`;
+            case Timeframe.TTM_BS:
+                return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet/quarter`;
             default:
                 return `https://www.marketwatch.com/investing/stock/${ticker}/financials/balance-sheet`;
         }
@@ -534,14 +625,14 @@ class CashFlow extends Statement {
         // Replace ill-format from the website
         const indexes1 = indexesOf(html, '<table');
         const indexes2 = indexesOf(html, '</table>');
-        
+
         try {
             for (let i = 0; i < this._targetIndexes.length; i++) {
                 const j = this._targetIndexes[i];
                 let tableStr = html.substring(indexes1[j], indexes2[j] + 8);
                 tableStr = tableStr.replaceAll('aria=label', 'xxx').replaceAll('<div></div>', '</div></div>');
                 logger.debug({ 'marketwatch _parseHtml': tableStr.toString() });
-                const table = (tableStr)? super._parseTable(tableStr) : [];
+                const table = (tableStr) ? super._parseTable(tableStr) : [];
                 // first and last column are dummy on this website's tables, so remove it
                 dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
             }
@@ -553,28 +644,56 @@ class CashFlow extends Statement {
     }
 
     /**
+     * Calculate the following average TTM data for 'Calculation.js'
+     * 'Average Total Assets', 'Average Total Accounts Receivable', 'Average Inventories', 
+     * 'Average Accounts Payable'
+     * @param {Array} table - array of arrays
+     * @return {Object} object of average data
+     */
+    _calculateAvergae(table) {
+        const avg = {};
+        const items = ['Total Assets', 'Total Accounts Receivable', 'Inventories', 'Accounts Payable'];
+        table = super._conversionTTM(table);
+        for (const date in table) {
+            avg[date] = {};
+            const subObj = table[date];
+            items.forEach(item => {
+                if (subObj[item]) {
+                    avg[date][`Average ${item}`] = tryParseFloat(subObj[item] / 4);
+                }});
+        }
+        return avg;
+    }
+
+    /**
      * Get all Balance Sheet in terms of object
      * @param {string} ticker 
-     * @param {Timeframe} timeframe default TTM
+     * @param {Timeframe} timeframe defau
+     * lt TTM
      * @return {object} object of objects
      */
     async getBalanceSheet(ticker, timeframe = Timeframe.TTM) {
         // download
         const html = await super._crawl(this._url(ticker));
         // get dict of raw tables 
-        const dict = (html)? this._parseHtml(html) : {};
-        for (const key in dict) {
+        const dict = (html) ? this._parseHtml(html) : {};
+
+        for (const date in dict) {
             // get table, which is in terms of array data type
-            const table = dict[key];
+            const table = dict[date];
             if (!table) {
                 continue;
-            } else {
-                dict[key] = arrayToObject(table);
+            }
+            // convert a array of arrays into an object of objects 
+            dict[date] = arrayToObject(table);
+            if  (timeframe == Timeframe.TTM_BS) {
+                const avg = this._calculateAvergae(table);
+                dict[date]['Average TTM'] = {...dict[date]['Average TTM'], ...avg};
             }
         }
         // Add currency info
-        dict['Currency'] = (html)? super._findCurrency(html) : '';
-        dict['Price'] = (html)? super._findPrice(html) : '';
+        dict['Data Currency'] = (html) ? super._findCurrency(html) : '';
+        dict['Price (USD)'] = (html) ? super._findPrice(html) : '';
 
         logger.info({ 'marketwatch getBalanceSheet': { ticker: dict } });
         return dict;

@@ -73,9 +73,34 @@ const queryProfile = async function (ticker) {
     }
 };
 
+/**
+ * Query profile statements
+ * @param {string} ticker - ticker of a share company(e.g. AAPL, MSFT).
+ * @param {Timeframe} timeFrame
+ * @return {string}
+ */
+ const queryCalculation = async function (ticker) {
+    try {       
+        const { Calculation, cashFlow, incomeStat, balanceSheet} = require('../../fetch/ticker/index');
+        let BS = null, CF = null, IS = null;
+        BS = await balanceSheet.getBalanceSheet(ticker, Timeframe.TTM_BS);
+        CF = await cashFlow.getCashFlow(ticker, Timeframe.TTM);
+        IS = await incomeStat.getIncomeStat(ticker, Timeframe.TTM_IS);
+
+        return {
+            'Calculateion': new Calculation(BS, IS, CF).calculate(),
+            'Cash Flow': CF,
+            'Income Statement': IS,
+            'Balance Sheet': BS,
+        };
+    } catch (err) {
+        throw new customErrors.APIError(`queryStatement ${err}`);
+    }
+};
 module.exports = {
     queryRatio: queryRatio,
     queryCurrentRatio: queryCurrentRatio,
     queryProfile: queryProfile,
     queryStatement: queryStatement,
+    queryCalculation: queryCalculation,
 };
