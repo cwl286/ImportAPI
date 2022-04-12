@@ -49,6 +49,7 @@ const queryMiddleware = () => {
         if (!req.body.ticker) {
             throw new customErrors.BadRequestError('Missing ticker');
         } else {
+            req.body.ticker = req.body.ticker.toLowerCase();
             return next();
         }
     };
@@ -67,6 +68,7 @@ const queryMiddleware = () => {
         } else {
             const keys = Object.keys(Timeframe);
             const input = req.params['timeFrameInput'].toString().toUpperCase();
+            req.body.ticker = req.body.ticker.toLowerCase();
             req.params['timeframe'] = keys.indexOf(input);
             return next();
         }
