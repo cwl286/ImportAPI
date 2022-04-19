@@ -65,9 +65,21 @@ describe('controllers/v2/queryRatio() real test', function () {
 });
 
 describe('controllers/v2/queryStatement() real test', function () {
-    it('query queryStatement correct ticker', async function () {
+    it('query queryStatement correct ticker MSFT', async function () {
         const { queryStatement } = require('../../app/controllers/routes/v2/query');
         const ticker = 'msft';
+        const res = await queryStatement(ticker, 2);
+        assert.isObject(res, 'not an object');
+        assert(Object.keys(res).length > 0, 'empty result');
+
+        expect(Object.keys(res['Income Statement']).length).to.be.greaterThan(0);
+        expect(Object.keys(res['Balance Sheet']).length).to.be.greaterThan(0);
+        expect(Object.keys(res['Cash Flow']).length).to.be.greaterThan(0);
+    });
+
+    it('query queryStatement correct ticker RH', async function () {
+        const { queryStatement } = require('../../app/controllers/routes/v2/query');
+        const ticker = 'rh';
         const res = await queryStatement(ticker, 2);
         assert.isObject(res, 'not an object');
         assert(Object.keys(res).length > 0, 'empty result');
@@ -83,8 +95,8 @@ describe('controllers/v2/queryStatement() real test', function () {
         const res = await queryStatement(ticker, 2);
         assert.isObject(res, 'not an object');
         assert(Object.keys(res).length > 0, 'empty result');
-        expect(res['Balance Sheet']['Currency']).to.be.equal('');
-        expect(res['Cash Flow']['Currency']).to.be.equal('');
+        expect(res['Balance Sheet']['Data Currency']).to.be.equal('');
+        expect(res['Cash Flow']['Data Currency']).to.be.equal('');
 
         expect(Object.keys(res['Income Statement']['Income Statement']).length).to.be.equal(0);
         expect(Object.keys(res['Balance Sheet']['Assets']).length).to.be.equal(0);

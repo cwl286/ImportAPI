@@ -8,8 +8,8 @@ const axios = require('axios').default;
 const { config } = require('../config');
 const { customErrors } = require('../controllers/error/index');
 
-const DEFAULT_USER_AGENT = `Mozilla/5.0 (Windows NT 10.0; Win64; x64)
-AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.361`;
+const DEFAULT_USER_AGENT = 
+'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36';
 
 /**
  * download full document by puppetteer (with header and body)
@@ -17,7 +17,7 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.361`;
  * @param {string} waitUntil networkidle0, networkidle2, domcontentloaded, load
  * @return {string} whole html
  */
-const getHtmlByPT = async function (url, waitUntil = 'networkidle0') {
+const getHtmlByPT = async function (url, waitUntil = 'networkidle2') {
     try {
         // set arguments
         const optionArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
@@ -97,7 +97,7 @@ const getHtml = async function (url) {
     try {
         return await getHtmlByAxios(url);
     } catch (err) {
-        return await getHtmlByPT(url, 'networkidle0');
+        return await getHtmlByPT(url);
     }
 };
 

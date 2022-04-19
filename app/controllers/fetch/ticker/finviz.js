@@ -1,4 +1,5 @@
 const xpath = require('xpath-html');
+const { getHtml } = require('../../../models/html');
 const { logger } = require('../../logger/index');
 
 /**
@@ -9,18 +10,19 @@ const { logger } = require('../../logger/index');
 const getData = async (ticker) => {
     const _url = `https://finviz.com/quote.ashx?t=${ticker}`;
 
-    const { getHtml } = require('../../../models/index');
+    const { getHtmlByPT } = require('../../../models/index');
     const { queryDOM } = require('../query/index');
     const { customErrors } = require('../../error/index');
     const { toMilBase, finToMathFormat, tryParseFloat } = require('../../aux/index');
     
     // download html
-    const html = await getHtml(_url);
+    const html = await getHtmlByPT(_url, 'domcontentloaded');
     logger.trace({ 'finviz html input': { ticker: html}});
 
     // query table
     let table = (html) ? queryDOM(html, 'table', 8) + queryDOM(html, 'table', 9) : '';
     table = (table) ? xpath.fromPageSource(table).findElements('//table[@class="snapshot-table2"]').toString() : '';
+
     logger.debug({'finviz DOM table': {ticker: table.toString()}});
 
     /**
@@ -41,9 +43,7 @@ const getData = async (ticker) => {
 
         for (let i = 0; tdKeys.length == tdValues.length && i < tdKeys.length; i++) {
             const key = tdKeys[i].getText().trim();
-            if (!key) {
-                continue;
-            }
+
             let value = tdValues[i].getText();
             // Financial format: '(1,000B)' to Math format: '-1000B'
             value = finToMathFormat(value);
