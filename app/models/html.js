@@ -14,9 +14,10 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.361`;
 /**
  * download full document by puppetteer (with header and body)
  * @param {string} url 
+ * @param {string} waitUntil networkidle0, networkidle2, domcontentloaded, load
  * @return {string} whole html
  */
-const getHtmlByPT = async function (url) {
+const getHtmlByPT = async function (url, waitUntil = 'networkidle0') {
     try {
         // set arguments
         const optionArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
@@ -51,7 +52,7 @@ const getHtmlByPT = async function (url) {
         await page.setUserAgent(userAgent);
         await page.setJavaScriptEnabled(true);
         await page.setDefaultNavigationTimeout(0);
-        await page.goto(url, { waitUntil: 'networkidle2' });
+        await page.goto(url, { waitUntil: waitUntil });
         await page.cookies();
         const doc = await page.evaluate(
             /* istanbul ignore next */
@@ -96,7 +97,7 @@ const getHtml = async function (url) {
     try {
         return await getHtmlByAxios(url);
     } catch (err) {
-        return await getHtmlByPT(url);
+        return await getHtmlByPT(url, 'networkidle0');
     }
 };
 

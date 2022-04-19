@@ -19,7 +19,8 @@ const getData = async (ticker) => {
     logger.trace({ 'finviz html input': { ticker: html}});
 
     // query table
-    const table = (html) ? queryDOM(html, 'table', 8) : '';
+    let table = (html) ? queryDOM(html, 'table', 8) + queryDOM(html, 'table', 9) : '';
+    table = (table) ? xpath.fromPageSource(table).findElements('//table[@class="snapshot-table2"]').toString() : '';
     logger.debug({'finviz DOM table': {ticker: table.toString()}});
 
     /**
@@ -40,8 +41,10 @@ const getData = async (ticker) => {
 
         for (let i = 0; tdKeys.length == tdValues.length && i < tdKeys.length; i++) {
             const key = tdKeys[i].getText().trim();
+            if (!key) {
+                continue;
+            }
             let value = tdValues[i].getText();
-
             // Financial format: '(1,000B)' to Math format: '-1000B'
             value = finToMathFormat(value);
             // Convert to million base: '1B' to '1000'

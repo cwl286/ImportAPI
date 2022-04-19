@@ -72,7 +72,7 @@ class Calculation {
         for (const header of this._ISheader) {
             const keys = Object.keys(this._IS[header]);
             const target = keys.reduce(
-                (prev, curr) => {return (new Date(curr) > new Date(prev)) ? curr : prev; },
+                (prev, curr) => {return (new Date(curr) > new Date(prev)) ? curr : prev;},
                 -8640000000000000
             );
             data = { ...data, ...this._IS[header][target] };
@@ -80,7 +80,7 @@ class Calculation {
         for (const header of this._BSheader) {
             const keys = Object.keys(this._BS[header]);
             const target = keys.reduce(
-                (prev, curr) => { return (new Date(curr) > new Date(prev)) ? curr : prev; },
+                (prev, curr) => {return (new Date(curr) > new Date(prev)) ? curr : prev;},
                 -8640000000000000
             );
             data = { ...data, ...this._BS[header][target] };
@@ -89,7 +89,7 @@ class Calculation {
         for (const header of this._CFheader) {
             const keys = Object.keys(this._CF[header]);
             const target = keys.reduce(
-                (prev, curr) => { return (new Date(curr) > new Date(prev)) ? curr : prev; },
+                (prev, curr) => {return (new Date(curr) > new Date(prev)) ? curr : prev;},
                 -8640000000000000
             );
             data = { ...data, ...this._CF[header][target] };

@@ -65,7 +65,7 @@ describe('fetch/ticker/finviz stimulate 2nd getFinviz()', function () {
 });
 
 describe('fetch/ticker/finviz real test getFinviz()', function () {
-    it('query Finviz correct ticker', async function () {
+    it('query Finviz correct ticker MSFT', async function () {
         const { getFinviz } = require('../../app/controllers/fetch/ticker/index');
         const ticker = 'msft';
 
@@ -73,6 +73,16 @@ describe('fetch/ticker/finviz real test getFinviz()', function () {
 
         assert.isObject(res, 'not an object');
         expect(res['Index']).to.be.equal('DJIA S&P500');
+    });
+
+    it('query Finviz correct ticker RH', async function () {
+        const { getFinviz } = require('../../app/controllers/fetch/ticker/index');
+        const ticker = 'rh';
+
+        const res = await getFinviz(ticker);
+
+        assert.isObject(res, 'not an object');
+        expect(res['Index']).to.be.equal('');
     });
 
     it('query Finviz incorrect ticker', async function () {
