@@ -9,6 +9,21 @@
     - In *Setting* tab, you can configure your *Domains*
     - In *Deploy/Manual deploy* tab, deploy branch.
     - HEROKU will build automatically
+<br/>
+Or
+1. Install the Heroku CLI
+2. Start Docker deamon
+```
+$ cd my-project (with Dockerfile)/
+$ heroku login
+$ docker ps
+$ heroku container:login
+# build an image and push
+$ heroku container:push <process-type>
+$ heroku container:release <process-type>
+$ heroku open
+```
+
 
 &emsp;(To create and manage Heroku apps directly from the terminal) <br/>
 1. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
