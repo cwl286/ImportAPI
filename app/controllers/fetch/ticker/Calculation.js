@@ -102,10 +102,10 @@ class Calculation {
      * @return {Object}
      */
     calculate() {
+        const result = {};
         if (!this._isValid()) {
             return result;
         }
-        const result = {};
         const data = this._prepareData();
 
         // Market Capitalization
