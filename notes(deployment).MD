@@ -17,10 +17,13 @@ Or
 $ cd my-project (with Dockerfile)/
 $ heroku login
 $ docker ps
+$ heroku access -a <app-name>
 $ heroku container:login
-# build an image and push
+## build an image and push
 $ heroku container:push <process-type>
 $ heroku container:release <process-type>
+## (it may need)
+$ heroku ps:scale web=1
 $ heroku open
 ```
 
@@ -31,6 +34,10 @@ $ heroku open
     `$ heroku --version`
     - Check git 
     `$ git --version`
+    - Check existing apps 
+    `$ heroku apps `
+    - Switch apps
+    `$ heroku git:remote -a your-project-name `
 2. Login in terminal `$ heroku login -i`
     - To check logs: 
     ```$ heroku logs -t -a=<New App Name>```

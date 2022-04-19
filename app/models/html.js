@@ -34,7 +34,7 @@ const getHtmlByPT = async function (url, waitUntil = 'networkidle2') {
         };
 
         if (config.puppeteer.browser) {
-            option['executablePath'] = config.puppeteer.browser;
+            options['executablePath'] = config.puppeteer.browser;
         }
 
         const browser = await puppeteer.launch(options);
@@ -97,7 +97,7 @@ const getHtml = async function (url) {
     try {
         return await getHtmlByAxios(url);
     } catch (err) {
-        return await getHtmlByPT(url);
+        return await getHtmlByPT(url, 'networkidle2');
     }
 };
 
