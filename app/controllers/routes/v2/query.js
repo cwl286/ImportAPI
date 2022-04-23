@@ -121,7 +121,8 @@ const queryCalculation = async function (ticker) {
         dict[keys[i]] = responses[i];
         result = { ...result, ...dict };
     }
-    result = { ...result, ...new Calculation(responses[0], responses[1], responses[2]).calculate()};
+    // match the paramteres 
+    result['Calculateion'] = await new Calculation(responses[2], responses[1], responses[0]).calculate();
     return result;
 };
 
