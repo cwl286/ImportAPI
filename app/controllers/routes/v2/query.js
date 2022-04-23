@@ -7,17 +7,25 @@ const { Timeframe } = require('../../fetch/ticker/index');
  * @return {string}
  */
 const queryRatio = async function (ticker) {
-    const { estimates, getFinviz, getStockAnalysis, getShortVolume } = require('../../fetch/ticker/index');     
-    try {               
-        return {
-            finviz: await getFinviz(ticker),
-            stockanalysis: await getStockAnalysis(ticker),
-            shortvolume: await getShortVolume(ticker),
-            marketwatch: await estimates.getEstimates(ticker),
-        };
-    } catch (err) {
-        throw new customErrors.APIError(`queryRatio ${err}`);
+    const { getFinviz, getStockAnalysis, getShortVolume, estimates} = require('../../fetch/ticker/index');
+    const promise1 = new Promise((resolve) => resolve(getFinviz(ticker)));
+    const promise2 = new Promise((resolve) => resolve(getStockAnalysis(ticker)));
+    const promise3 = new Promise((resolve) => resolve(getShortVolume(ticker)));
+    const promise4 = new Promise((resolve) => resolve(estimates.getEstimates(ticker)));
+
+    const responses = await Promise.all([promise1, promise2, promise3, promise4])
+        .catch(err => {
+            throw new customErrors.APIError(`queryRatio ${err}`);
+        });
+
+    const keys = ['finviz', 'stockanalysis', 'shortvolume', 'marketwatch'];
+    let result = {};
+    for (let i = 0; i < responses.length; i++) {
+        const dict = {};
+        dict[keys[i]] = responses[i];
+        result = { ...result, ...dict };
     }
+    return result;
 };
 
 /**
@@ -26,17 +34,25 @@ const queryRatio = async function (ticker) {
  * @return {string}
  */
 const queryCurrentRatio = async function (ticker) {
-    const { estimates, getFinviz, getStockAnalysisLatest, getShortVolumeLatest } = require('../../fetch/ticker/index');
-    try {        
-        return {
-            finviz: await getFinviz(ticker),
-            stockanalysis: await getStockAnalysisLatest(ticker),
-            shortvolume: await getShortVolumeLatest(ticker),
-            marketwatch: await estimates.getCurrentEstimates(ticker),
-        };
-    } catch (err) {
-        throw new customErrors.APIError(`queryCurrentRatio ${err}`);
+    const { getFinviz, getStockAnalysisLatest, getShortVolumeLatest, estimates } = require('../../fetch/ticker/index');
+    const promise1 = new Promise((resolve) => resolve(getFinviz(ticker)));
+    const promise2 = new Promise((resolve) => resolve(getStockAnalysisLatest(ticker)));
+    const promise3 = new Promise((resolve) => resolve(getShortVolumeLatest(ticker)));
+    const promise4 = new Promise((resolve) => resolve(estimates.getCurrentEstimates(ticker)));
+
+    const responses = await Promise.all([promise1, promise2, promise3, promise4])
+        .catch(err => {
+            throw new customErrors.APIError(`queryCurrentRatio ${err}`);
+        });
+
+    const keys = ['finviz', 'stockanalysis', 'shortvolume', 'marketwatch'];
+    let result = {};
+    for (let i = 0; i < responses.length; i++) {
+        const dict = {};
+        dict[keys[i]] = responses[i];
+        result = { ...result, ...dict };
     }
+    return result;
 };
 
 /**
@@ -60,17 +76,25 @@ const queryProfile = async function (ticker) {
  * @param {Timeframe} timeFrame
  * @return {string}
  */
- const queryStatement = async function (ticker, timeFrame) {
-    try {       
-        const { estimates, cashFlow, incomeStat, balanceSheet} = require('../../fetch/ticker/index');
-        return {
-            'Cash Flow': await cashFlow.getCashFlow(ticker, timeFrame),
-            'Income Statement': await incomeStat.getIncomeStat(ticker, timeFrame),
-            'Balance Sheet': await balanceSheet.getBalanceSheet(ticker, timeFrame),
-        };
-    } catch (err) {
-        throw new customErrors.APIError(`queryStatement ${err}`);
+const queryStatement = async function (ticker, timeFrame) {
+    const { estimates, cashFlow, incomeStat, balanceSheet } = require('../../fetch/ticker/index');
+    const promise1 = new Promise((resolve) => resolve(cashFlow.getCashFlow(ticker, timeFrame)));
+    const promise2 = new Promise((resolve) => resolve(incomeStat.getIncomeStat(ticker, timeFrame)));
+    const promise3 = new Promise((resolve) => resolve(balanceSheet.getBalanceSheet(ticker, timeFrame)));
+
+    const responses = await Promise.all([promise1, promise2, promise3])
+        .catch(err => {
+            throw new customErrors.APIError(`queryStatement ${err}`);
+        });
+
+    const keys = ['Cash Flow', 'Income Statement', 'Balance Sheet'];
+    let result = {};
+    for (let i = 0; i < responses.length; i++) {
+        const dict = {};
+        dict[keys[i]] = responses[i];
+        result = { ...result, ...dict };
     }
+    return result;
 };
 
 /**
@@ -79,24 +103,28 @@ const queryProfile = async function (ticker) {
  * @param {Timeframe} timeFrame
  * @return {string}
  */
- const queryCalculation = async function (ticker) {
-    try {       
-        const { Calculation, cashFlow, incomeStat, balanceSheet} = require('../../fetch/ticker/index');
-        let BS = null, CF = null, IS = null;
-        BS = await balanceSheet.getBalanceSheet(ticker, Timeframe.TTM_BS);
-        CF = await cashFlow.getCashFlow(ticker, Timeframe.TTM);
-        IS = await incomeStat.getIncomeStat(ticker, Timeframe.TTM_IS);
+const queryCalculation = async function (ticker) {
+    const { Calculation, cashFlow, incomeStat, balanceSheet } = require('../../fetch/ticker/index');
+    const promise1 = new Promise((resolve) => resolve(cashFlow.getCashFlow(ticker, Timeframe.TTM_BS)));
+    const promise2 = new Promise((resolve) => resolve(incomeStat.getIncomeStat(ticker, Timeframe.TTM_BS)));
+    const promise3 = new Promise((resolve) => resolve(balanceSheet.getBalanceSheet(ticker, Timeframe.TTM_BS)));
 
-        return {
-            'Calculateion': new Calculation(BS, IS, CF).calculate(),
-            'Cash Flow': CF,
-            'Income Statement': IS,
-            'Balance Sheet': BS,
-        };
-    } catch (err) {
-        throw new customErrors.APIError(`queryStatement ${err}`);
+    const responses = await Promise.all([promise1, promise2, promise3])
+        .catch(err => {
+            throw new customErrors.APIError(`queryCalculation ${err}`);
+        });
+
+    const keys = ['Cash Flow', 'Income Statement', 'Balance Sheet'];
+    let result = {};
+    for (let i = 0; i < responses.length; i++) {
+        const dict = {};
+        dict[keys[i]] = responses[i];
+        result = { ...result, ...dict };
     }
+    result = { ...result, ...new Calculation(responses[0], responses[1], responses[2]).calculate()};
+    return result;
 };
+
 module.exports = {
     queryRatio: queryRatio,
     queryCurrentRatio: queryCurrentRatio,

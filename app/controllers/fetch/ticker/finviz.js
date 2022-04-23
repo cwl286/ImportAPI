@@ -1,5 +1,4 @@
 const xpath = require('xpath-html');
-const { getHtml } = require('../../../models/html');
 const { logger } = require('../../logger/index');
 
 /**

@@ -32,6 +32,7 @@ $ heroku ps:scale web=1
 $ heroku open
 ```
 
+Or (by Heroku's Git)
 It requires the [*Procfile*](https://devcenter.heroku.com/articles/procfile#procfile-naming-and-location) file
 ```
 $ heroku login
