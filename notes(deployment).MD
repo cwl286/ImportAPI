@@ -38,7 +38,9 @@ It requires the [*Procfile*](https://devcenter.heroku.com/articles/procfile#proc
 $ heroku login
 $ cd my-project/
 $ git init
+## select project
 $ heroku git:remote -a my-project
+$ heroku buildpacks:add heroku/nodejs
 $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
 $ git add .
 $ git commit -am "make it better"
