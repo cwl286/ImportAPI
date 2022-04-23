@@ -33,6 +33,7 @@ $ heroku open
 ```
 
 Or (by Git)
+It requires the *Procfile.txt*
 ```
 $ heroku login
 $ cd my-project/
