@@ -42,6 +42,9 @@ $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.g
 $ git add .
 $ git commit -am "make it better"
 $ git push heroku master
+
+# it may need
+$ heroku ps:scale web=1
 ```
 
 &emsp;***To manage Heroku apps directly from the terminal***
