@@ -28,6 +28,10 @@
     "nyc": "^15.1.0",
     "sinon": "^13.0.1"
   },
+  "engines": {
+    "node": ">= 17.8.0",
+    "npm": ">= 8.5.5"
+  }
   "eslintConfig": {
     "extends": [
       "eslint:recommended",
