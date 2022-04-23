@@ -33,7 +33,7 @@ $ heroku open
 ```
 
 Or (by Git)
-It requires the *Procfile.txt*
+It requires the *Procfile* file
 ```
 $ heroku login
 $ cd my-project/
@@ -61,11 +61,12 @@ $ heroku ps:scale web=1
     `$ heroku git:remote -a your-project-name `
 2. Login in terminal `$ heroku login -i`
     - To check logs: 
-    ```$ heroku logs -t -a=<New App Name>```
+    `$ heroku logs -t -a=<New App Name>`
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/)): 
-    ```$ heroku local web```
-    - To see all the preset Heroku environment variables
-    ```heroku run printenv```
+    `$ heroku local web`
+    - To see all the preset Heroku environment variables 
+    `heroku run printenv`
+    - to determine the number of dynos that are executing `heroku ps`
     - [https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
 
