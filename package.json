@@ -11,7 +11,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "nyc mocha ./test/controllers/finviz.js --timeout 100000",
+    "test": "nyc mocha ./test/controllers/fetch_v2.js --timeout 100000",
     "start": "node app.js --timeout 100000",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
