@@ -1,5 +1,8 @@
 #### Deployment  <br/>
-######*HEROKU*   (deploy without REDIS) <br/>
+##### *HEROKU*   (deploy without REDIS) <br/>
+
+(By GitHub)
+
 1. Clone this responsitory to your GitHub
 2. Register an account [https://www.heroku.com/](https://www.heroku.com/) <br/>
 3. Create *New App* with your *App name* and *region*
@@ -10,7 +13,9 @@
     - In *Deploy/Manual deploy* tab, deploy branch.
     - HEROKU will build automatically
 <br/>
-Or
+
+Or (By uploading container)
+
 1. Install the Heroku CLI
 2. Start Docker deamon
 ```
@@ -27,8 +32,20 @@ $ heroku ps:scale web=1
 $ heroku open
 ```
 
+Or (by Git)
+```
+$ heroku login
+$ cd my-project/
+$ git init
+$ heroku git:remote -a my-project
+$ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
+$ git add .
+$ git commit -am "make it better"
+$ git push heroku master
+```
 
-&emsp;(To create and manage Heroku apps directly from the terminal) <br/>
+&emsp;***To manage Heroku apps directly from the terminal***
+
 1. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 
     - Check heroku 
     `$ heroku --version`
@@ -48,7 +65,7 @@ $ heroku open
     - [https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
 
-######*docker*   (deploy without REDIS) <br/>
+#### *docker*   (deploy without REDIS) <br/>
 1. Start Docker daemon
 2. Go to the directory of *Dockerfile*.
 3. To build a docker image (dot at the end is a must).
@@ -58,7 +75,7 @@ $ heroku open
     - *3000:3000* refers to *<HOST_PORT>:<IMAGE_PORT>*, where in *Dockerfile*, *<IMAGE_PORT>* is defined as *ENV PORT=3000* and then *EXPOSE 3000*.
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/))
 
-######*docker compose*   (deploy with REDIS) <br/>
+#### *docker compose*   (deploy with REDIS) <br/>
 1. Start Docker daemon
 2. Go to the directory of *docker-compose.yml*.
 3. Type `$ docker compose up --build` in terminal to build docker images
