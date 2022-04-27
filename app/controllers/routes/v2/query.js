@@ -1,4 +1,4 @@
-const { APIError } = require('../../error/index');
+const { customErrors } = require('../../error/index');
 const { Timeframe } = require('../../fetch/ticker/index');
 
 /**
@@ -15,7 +15,7 @@ const queryRatio = async function (ticker) {
 
     const responses = await Promise.all([promise1, promise2, promise3, promise4])
         .catch(err => {
-            throw new APIError(`queryRatio ${err}`);
+            throw new customErrors.APIError(`queryRatio ${err}`);
         });
 
     const keys = ['finviz', 'stockanalysis', 'shortvolume', 'marketwatch'];
@@ -42,7 +42,7 @@ const queryCurrentRatio = async function (ticker) {
 
     const responses = await Promise.all([promise1, promise2, promise3, promise4])
         .catch(err => {
-            throw new APIError(`queryCurrentRatio ${err}`);
+            throw new customErrors.APIError(`queryCurrentRatio ${err}`);
         });
 
     const keys = ['finviz', 'stockanalysis', 'shortvolume', 'marketwatch'];
@@ -66,7 +66,7 @@ const queryProfile = async function (ticker) {
         const data1 = await getProfile(ticker);
         return data1;
     } catch (err) {
-        throw new APIError(`queryProfile ${err}`);
+        throw new customErrors.APIError(`queryProfile ${err}`);
     }
 };
 
@@ -77,14 +77,14 @@ const queryProfile = async function (ticker) {
  * @return {string}
  */
 const queryStatement = async function (ticker, timeFrame) {
-    const { cashFlow, incomeStat, balanceSheet } = require('../../fetch/ticker/index');
+    const { estimates, cashFlow, incomeStat, balanceSheet } = require('../../fetch/ticker/index');
     const promise1 = new Promise((resolve) => resolve(cashFlow.getCashFlow(ticker, timeFrame)));
     const promise2 = new Promise((resolve) => resolve(incomeStat.getIncomeStat(ticker, timeFrame)));
     const promise3 = new Promise((resolve) => resolve(balanceSheet.getBalanceSheet(ticker, timeFrame)));
 
     const responses = await Promise.all([promise1, promise2, promise3])
         .catch(err => {
-            throw new APIError(`queryStatement ${err}`);
+            throw new customErrors.APIError(`queryStatement ${err}`);
         });
 
     const keys = ['Cash Flow', 'Income Statement', 'Balance Sheet'];
@@ -111,7 +111,7 @@ const queryCalculation = async function (ticker) {
 
     const responses = await Promise.all([promise1, promise2, promise3])
         .catch(err => {
-            throw new APIError(`queryCalculation ${err}`);
+            throw new customErrors.APIError(`queryCalculation ${err}`);
         });
 
     const keys = ['Cash Flow', 'Income Statement', 'Balance Sheet'];

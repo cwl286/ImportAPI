@@ -1,5 +1,5 @@
 const passport = require('../../authorization/index').passport;
-const { BadRequestError } = require('../../error/index');
+const {customErrors} = require('../../error/index');
 const { Timeframe } = require('../../fetch/ticker/index');
 
 
@@ -47,7 +47,7 @@ const authMiddleware = () => {
 const queryMiddleware = () => {
     return function (req, res, next) {
         if (!req.body.ticker) {
-            throw new BadRequestError('Missing ticker');
+            throw new customErrors.BadRequestError('Missing ticker');
         } else {
             req.body.ticker = req.body.ticker.toLowerCase();
             return next();
@@ -64,7 +64,7 @@ const queryMiddleware = () => {
     return function (req, res, next) {
         if (!req.params['timeFrameInput'] && !req.body.ticker) {
             const msg = 'Missing timeframe or ticker';
-            throw new BadRequestError(msg);
+            throw new customErrors.BadRequestError(msg);
         } else {
             const keys = Object.keys(Timeframe);
             const input = req.params['timeFrameInput'].toString().toUpperCase();

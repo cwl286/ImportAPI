@@ -1,4 +1,4 @@
 module.exports = {
-  initAuth: require('./init').init,
+  init: require('./init').init,
   passport: require('./init').passport,
 };

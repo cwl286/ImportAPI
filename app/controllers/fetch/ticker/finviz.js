@@ -1,5 +1,4 @@
 const xpath = require('xpath-html');
-const { APIError } = require('../../error/index');
 const { logger } = require('../../logger/index');
 
 /**
@@ -12,6 +11,7 @@ const getData = async (ticker) => {
 
     const { getHtmlByPT } = require('../../../models/index');
     const { queryDOM } = require('../query/index');
+    const { customErrors } = require('../../error/index');
     const { toMilBase, finToMathFormat, tryParseFloat } = require('../../aux/index');
     
     // download html
@@ -37,7 +37,7 @@ const getData = async (ticker) => {
             tdKeys = xpath.fromPageSource(table).findElements('//td[text() and count(.//*) =0]');
             tdValues = xpath.fromPageSource(table).findElements('//td//*[text()]');
         } catch (err) {
-            throw new APIError(name = '_parseRatio Error', description = err.toString());
+            throw new customErrors.APIError(name = '_parseRatio Error', description = err.toString());
         }
 
         for (let i = 0; tdKeys.length == tdValues.length && i < tdKeys.length; i++) {

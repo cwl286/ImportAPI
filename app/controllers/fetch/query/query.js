@@ -1,6 +1,6 @@
-import { DOMParser } from 'xmldom' ;
-import xpath from 'xpath-html';
-import { BadRequestError } from '../../error/index';
+const { DOMParser } = require('xmldom');
+const xpath = require('xpath-html');
+const {customErrors} = require('../../error/index');
 
 /**
  * Query DOM
@@ -11,7 +11,7 @@ import { BadRequestError } from '../../error/index';
  *  default = null meaning return all
  * @return {string} 
  */
-const queryDOM = function (html: string, tag: string, index?: number): string {
+const queryDOM = function (html, tag, index = null) {
     try {
         let str = '';
         const parsed = new DOMParser({
@@ -30,28 +30,28 @@ const queryDOM = function (html: string, tag: string, index?: number): string {
         return str;
     } catch (err) {
         console.error(`Dom Parser Error: ${err.toString()}`);
-        throw new BadRequestError(err.toString());
+        throw new customErrors.BadRequestError(description = err.toString());
     }    
 };
 
 
 /**
  * Query Xpath
- * @param {string} xml - The URL of the page to examine, including protocol (e.g. http://). 
- * @param {string} query - The XPath query to run on the structured data. 
+ * @param {*} xml - The URL of the page to examine, including protocol (e.g. http://). 
+ * @param {*} query - The XPath query to run on the structured data. 
  * @return {string}
  */
-const queryXpath = function (xml: string, query: string): string {
+const queryXpath = function (xml, query) {
     try {
         const nodes = xpath.fromPageSource(xml).findElements(query);
         return nodes.toString();
     } catch (err) {
         console.error(`Xpath Parser Error: ${err.toString()}`);
-        throw new BadRequestError( err.toString());
+        throw new customErrors.BadRequestError(description = err.toString());
     }
 };
 
-export {
-    queryDOM,
-    queryXpath
-}
+module.exports = {
+    queryDOM: queryDOM,
+    queryXpath: queryXpath,
+};
