@@ -1,4 +1,4 @@
 module.exports = {
-    queryDOM: require('./query').queryDOM,
-    queryXpath: require('./query').queryXpath,
+    queryDOM: require('./query.ts').queryDOM,
+    queryXpath: require('./query.ts').queryXpath,
 };

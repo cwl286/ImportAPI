@@ -1,22 +1,25 @@
-const HttpStatusCode = {
-    OK: 200,
-    BAD_REQUEST: 400,
-    AUANTHORIZED: 401,
-    NOT_FOUND: 404,
-    INTERNAL_SERVER: 500,
-};
+enum HttpStatusCode {
+    OK = 200,
+    BAD_REQUEST = 400,
+    AUANTHORIZED = 401,
+    NOT_FOUND = 404,
+    INTERNAL_SERVER = 500,
+}
 
 /**
  * Base error class
  */
 class BaseError extends Error {
+    protected httpCode: HttpStatusCode;
+    protected isOperational: boolean;
+
     /**
      * @param {string} name 
      * @param {string} description 
      * @param {boolean} isOperational
      * @param {HttpStatusCode} httpCode 
      */
-    constructor(name, description, isOperational, httpCode) {
+    constructor(name:string, description: string, isOperational: boolean, httpCode: HttpStatusCode) {
         super(description);
         Object.setPrototypeOf(this, new.target.prototype);
 
@@ -38,7 +41,7 @@ class APIError extends BaseError {
      * @param {boolean} isOperational (optional)
      * @param {INTERNAL_SERVER} httpCode (optional)
      */
-    constructor(name, description = 'Internal Server Error',
+    constructor(name: string, description = 'Internal Server Error',
         isOperational = false, httpCode = HttpStatusCode.INTERNAL_SERVER) {
         super(name, description, isOperational, httpCode);
     }
@@ -80,10 +83,4 @@ class NotFoundError extends BaseError {
     }
 }
 
-module.exports = {
-    BaseError: BaseError,
-    APIError: APIError,
-    BadRequestError: BadRequestError,
-    UnauthError: UnauthError,
-    NotFoundError: NotFoundError,
-};
+export { BaseError, APIError, BadRequestError, UnauthError, NotFoundError };

@@ -1,4 +1,4 @@
-const { BaseError } = require('./customErrors');
+const { BaseError } = require('./CustomErrors');
 const { logger } = require('../logger/index');
 
 /**
@@ -25,4 +25,5 @@ class ErrorHandler {
         return (err instanceof BaseError)? err.isOperational : false;
     }
 }
+
 module.exports.errorHandler = new ErrorHandler();

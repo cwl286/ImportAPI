@@ -1,6 +1,6 @@
 const xpath = require('xpath-html');
 const { logger } = require('../../logger/index');
-const { customErrors } = require('../../error/index');
+const { APIError } = require('../../error/index');
 const { tryParseFloat, toMilBase, finToMathFormat, arrayToObject, indexesOf } = require('../../aux/index');
 const Timeframe = require('./Timeframe');
 
@@ -50,7 +50,7 @@ class Statement {
                 result.push(processedRow);
             }
         } catch (err) {
-            throw new customErrors.APIError('_parseTable Error', err.toString());
+            throw new APIError('_parseTable Error', err.toString());
         }
         return (result.length > 0) ? result : [];
     }
@@ -75,7 +75,7 @@ class Statement {
                 }
             }
         } catch (err) {
-            throw new customErrors.APIError('_findPrice Error', err.toString());
+            throw new APIError('_findPrice Error', err.toString());
         }
         return price;
     }
@@ -99,7 +99,7 @@ class Statement {
                 }
             }
         } catch (err) {
-            throw new customErrors.APIError('_findCurrency Error', err.toString());
+            throw new APIError('_findCurrency Error', err.toString());
         }
         return currency;
     }
@@ -223,7 +223,7 @@ class Estimates extends Statement {
                 dict[this._tableNames[i]] = (table) ? super._parseTable(table.toString()) : [];
             }
         } catch (err) {
-            throw new customErrors.APIError('Estimates _parseHtml Error', err.toString());
+            throw new APIError('Estimates _parseHtml Error', err.toString());
         }
         return dict;
     }
@@ -369,7 +369,7 @@ class CashFlow extends Statement {
                 dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
             }
         } catch (err) {
-            throw new customErrors.APIError('CashFlow _parseHtml Error', err.toString());
+            throw new APIError('CashFlow _parseHtml Error', err.toString());
         }
         return dict;
     }
@@ -462,7 +462,7 @@ class IncomeStat extends Statement {
                 dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
             }
         } catch (err) {
-            throw new customErrors.APIError('Incomestat _parseHtml Error', err.toString());
+            throw new APIError('Incomestat _parseHtml Error', err.toString());
         }
         return dict;
     }
@@ -637,7 +637,7 @@ class BalanceSheet extends Statement {
                 dict[this._tableNames[i]] = table.map(row => row.slice(1, row.length - 1));
             }
         } catch (err) {
-            throw new customErrors.APIError('Balancesheet _parseHtml Error', err.toString());
+            throw new APIError('Balancesheet _parseHtml Error', err.toString());
         }
 
         return dict;

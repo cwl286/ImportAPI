@@ -1,6 +1,6 @@
 const app = require('./app/index');
 const port = require('./app/config/index').config.server.port;
-const { errorHandler } = require('./app/controllers/index');
+const { errorHandler } = require('./app/controllers/error/index');
 
 const server = app.listen(port, function(err) {
   if (err) {
