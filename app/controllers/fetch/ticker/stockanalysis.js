@@ -1,6 +1,7 @@
 const xpath = require('xpath-html');
 const { arrayToObject, tryParseFloat } = require('../../aux/index');
 const { logger } = require('../../logger/index');
+const { APIError } = require('../../error/index');
 
 /**
  * Get data from StockAnalysis.com
@@ -91,7 +92,6 @@ const getProfile = async (ticker) => {
     const _url = `https://stockanalysis.com/stocks/${ticker}/company/`;
 
     const { getHtml } = require('../../../models/index');
-    const { customErrors } = require('../../error/index');
     const html = await getHtml(_url);
     logger.trace({ 'stockanalysis html input': { ticker: html}});
 
@@ -118,7 +118,7 @@ const getProfile = async (ticker) => {
         try {
             profile = JSON.parse(script);
         } catch (err) {
-            throw new customErrors.APIError(name = '_parseProfile Error', description = err.toString());
+            throw new APIError(name = '_parseProfile Error', description = err.toString());
         }
         return { ...profile.props.pageProps.info, ...profile.props.pageProps.data };
     }

@@ -6,7 +6,7 @@ const proxyChain = require('proxy-chain');
 const axios = require('axios').default;
 
 const { config } = require('../config');
-const { customErrors } = require('../controllers/error/index');
+const { BadRequestError } = require('../controllers/error/index');
 
 const DEFAULT_USER_AGENT = 
 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36';
@@ -62,7 +62,7 @@ const getHtmlByPT = async function (url, waitUntil = 'networkidle2') {
         await browser.close();
         return doc;
     } catch (err) {
-        throw new customErrors.BadRequestError(description = err.toString());
+        throw new BadRequestError(description = err.toString());
     }
 };
 
@@ -80,11 +80,11 @@ const getHtmlByAxios = async function (url) {
             if (res.status == 200 && res.data.toString().indexOf('Cloudflare') === -1) {
                 return res.data;
             }
-            throw new customErrors.BadRequestError(name = 'Axios Error',
+            throw new BadRequestError(name = 'Axios Error',
                 description = `Problem status code: ${res.status}`);
         })
         .catch((err) => {
-            throw new customErrors.BadRequestError(name = 'Axios Error', description = err.toString());
+            throw new BadRequestError(name = 'Axios Error', description = err.toString());
         });
 };
 

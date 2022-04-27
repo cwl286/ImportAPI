@@ -1,4 +1,10 @@
+const { BaseError, BadRequestError, APIError, NotFoundError, UnauthError } = require('./customErrors');
+
 module.exports = {
-    customErrors: require('./customErrors'),
+    BaseError: BaseError,
+    BadRequestError: BadRequestError,
+    APIError: APIError,
+    NotFoundError: NotFoundError,
+    UnauthError: UnauthError,
     errorHandler: require('./handler').errorHandler,
 };

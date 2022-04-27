@@ -1,6 +1,6 @@
 const {passport} = require('../../authorization/index');
 const {isValidUrl} = require('../../aux/index');
-const {customErrors} = require('../../error/index');
+const { BadRequestError } = require('../../error/index');
 
 /**
  * authenticate apikey by Passport
@@ -47,10 +47,10 @@ const importHtmlMiddleware = () => {
     return function (req, res, next) {
         if (!req.body.url || !req.body.tag) {
             // throw new Error('test');
-            throw new customErrors.BadRequestError('Missing url or tag');
+            throw new BadRequestError('Missing url or tag');
         }
         else if (!isValidUrl(req.body.url)) {
-            throw new customErrors.BadRequestError('Invalid url');
+            throw new BadRequestError('Invalid url');
         } else {
             return next();
         }
@@ -65,7 +65,7 @@ const importHtmlMiddleware = () => {
 const importXmlMiddleware = () => {
     return function (req, res, next) {
         if (!req.body.url && !req.body.query) {
-            throw new customErrors.BadRequestError('Missing url or query');
+            throw new BadRequestError('Missing url or query');
         } else {
             return next();
         }

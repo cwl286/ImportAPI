@@ -4,7 +4,13 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const helmet = require('helmet');
 
-const { apiRouterV1, apiRouterV2, initAuth, initAccessLogger, errorHandler, customErrors } = require('./controllers/index');
+
+const { apiRouterV1, apiRouterV2 } = require('./controllers/routes/index');
+const { initAuth } = require('./controllers/authorization/index');
+const { initAccessLogger } =  require('./controllers/logger/index');
+const { errorHandler, APIError, UnauthError, NotFoundError } = require('./controllers/error/index');
+
+
 const { Feedback } = require('./models/index');
 const { config } = require('./config/index');
 
@@ -32,7 +38,7 @@ if (config.session.store === 'REDIS' || config.session.store === 'redis') {
     .then(() => {console.log(`Successfully connected REDIS ${config.session.storeUrl}`);})
     .catch((error) => {
       console.error(error);
-      throw new customErrors.APIError(
+      throw new APIError(
         name = 'Redis Error',
         description = `Fail to connect Redis ${config.session.storeUrl}`);
     });
@@ -63,12 +69,12 @@ app.all('/logout', function (req, res) {
 
 // '/unauth'
 app.all('/unauth', (req, res, next) => {
-  throw new customErrors.UnauthError();
+  throw new UnauthError();
 });
 
 // '/*' wildcard routing 
 app.all('/*', function (req, res) {
-  throw new customErrors.NotFoundError();
+  throw new NotFoundError();
 });
 
 // app error-handling 

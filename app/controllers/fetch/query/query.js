@@ -1,6 +1,6 @@
 const { DOMParser } = require('xmldom');
 const xpath = require('xpath-html');
-const {customErrors} = require('../../error/index');
+const { BadRequestError } = require('../../error/index');
 
 /**
  * Query DOM
@@ -30,7 +30,7 @@ const queryDOM = function (html, tag, index = null) {
         return str;
     } catch (err) {
         console.error(`Dom Parser Error: ${err.toString()}`);
-        throw new customErrors.BadRequestError(description = err.toString());
+        throw new BadRequestError(description = err.toString());
     }    
 };
 
@@ -47,7 +47,7 @@ const queryXpath = function (xml, query) {
         return nodes.toString();
     } catch (err) {
         console.error(`Xpath Parser Error: ${err.toString()}`);
-        throw new customErrors.BadRequestError(description = err.toString());
+        throw new BadRequestError(description = err.toString());
     }
 };
 
