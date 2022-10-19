@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { authMiddleware, importHtmlMiddleware, importXmlMiddleware } = require('./middleware');
 const { Feedback } = require('../../../models/index');
-const { importHtml, importXML } = require('./import');
+const { importHtml, importXML, importJson } = require('./import');
 
 // for passport.authenticate by GET method
 // since passport.authenticate only allow POST
@@ -32,6 +32,25 @@ const xmlResponse = () => {
         }
     };
 };
+
+/**
+ * Ad hoc API for https://www.1823.gov.hk/common/ical/en.json
+ * @return {JSON}
+ */
+const jsonResponse = () => {
+    return async (req, res, next) => {
+        try {
+            const msg = await importJson();
+            res.status(200).json(msg);
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+// "/api/v?/importjson"
+router.route('/importjson')
+    .get(authMiddleware(),jsonResponse());
 
 // "/api/v?/importhtml"
 router.route('/importhtml')

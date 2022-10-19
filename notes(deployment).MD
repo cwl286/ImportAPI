@@ -49,7 +49,6 @@ $ git push heroku master
 # it may need
 $ heroku ps:scale web=1
 ```
-
 &emsp;***To manage Heroku apps directly from the terminal***
 
 1. Download [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) 

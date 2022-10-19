@@ -32,7 +32,32 @@ const importXML = async function (url, query) {
     return (html) ? queryXpath(html, query) : '';
 };
 
+/**
+ * Ad hoc API for https://www.1823.gov.hk/common/ical/en.json
+ * importJson('https://www.1823.gov.hk/common/ical/en.json')
+ * @return {JSON}
+ */
+ const importJson = async function () {
+    
+    const { getHtml } = require('../../../models/index');
+    const url = 'https://www.1823.gov.hk/common/ical/en.json';
+    const obj = await getHtml(url);
+    const data = obj["vcalendar"][0]["vevent"];
+    const json = {};
+    for (let i = 0; i < data.length; i++) {
+      let row = data[i];
+      let dict = {};
+      dict["uid"] = row["uid"][0];
+      dict["dtstart"] = row["dtstart"][0];
+      dict["dtend"] = row["dtend"][0];
+      dict["summary"] = row["summary"];
+      json[i] = dict;
+    }
+    return json;
+};
+
 module.exports = {
     importHtml: importHtml,
     importXML: importXML,
+    importJson: importJson,
 };

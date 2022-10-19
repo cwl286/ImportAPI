@@ -4,14 +4,15 @@
   "description": "web crawler",
   "main": "app.js",
   "engines": {
-    "node": "v17.8.0"
+    "node": ">= 17.8.0",
+    "npm": ">= 8.5.5"
   },
   "directories": {
     "app": "app",
     "test": "test"
   },
   "scripts": {
-    "test": "nyc mocha ./test/controllers/fetch_v2.js --timeout 100000",
+    "test": "nyc mocha ./test/models/json.js --timeout 100000",
     "start": "node app.js --timeout 100000",
     "lint": "eslint .",
     "lint-fix": "npm run lint -- --fix",
@@ -25,12 +26,9 @@
     "eslint": "^8.12.0",
     "eslint-config-google": "^0.14.0",
     "mocha": "^9.2.2",
+    "morgan": "^1.10.0",
     "nyc": "^15.1.0",
     "sinon": "^13.0.1"
-  },
-  "engines": {
-    "node": ">= 17.8.0",
-    "npm": ">= 8.5.5"
   },
   "eslintConfig": {
     "extends": [
@@ -102,7 +100,6 @@
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "helmet": "^5.0.2",
-    "morgan": "^1.10.0",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "passport-localapikey-update": "^0.6.0",
