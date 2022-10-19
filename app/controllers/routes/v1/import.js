@@ -37,10 +37,9 @@ const importXML = async function (url, query) {
  * importJson('https://www.1823.gov.hk/common/ical/en.json')
  * @return {JSON}
  */
- const importJson = async function () {
+ const importJson = async function (url = "https://www.1823.gov.hk/common/ical/en.json") {
     
     const { getHtml } = require('../../../models/index');
-    const url = 'https://www.1823.gov.hk/common/ical/en.json';
     const obj = await getHtml(url);
     const data = obj["vcalendar"][0]["vevent"];
     const json = {};

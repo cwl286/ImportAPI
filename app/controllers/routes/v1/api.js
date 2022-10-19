@@ -40,7 +40,7 @@ const xmlResponse = () => {
 const jsonResponse = () => {
     return async (req, res, next) => {
         try {
-            const msg = await importJson();
+            const msg = await importJson(req.body.url);
             res.status(200).json(msg);
         } catch (err) {
             next(err);
