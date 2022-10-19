@@ -100,7 +100,7 @@
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "helmet": "^5.0.2",
-    "passport": "^0.5.2",
+    "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "passport-localapikey-update": "^0.6.0",
     "proxy-chain": "^1.0.4",
