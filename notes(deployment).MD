@@ -39,7 +39,7 @@ $ heroku login
 $ cd my-project/
 $ git init
 ## select project
-$ heroku git:remote -a my-project
+$ heroku git:remote -a <my-project-name>
 $ heroku buildpacks:add heroku/nodejs
 $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
 $ git add .
