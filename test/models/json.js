@@ -19,7 +19,7 @@ describe('models/json getJson() real test', function () {
     for (let i = 0; i < data.length; i++) {
       let row = data[i];
       let dict = {};
-      dict["uid"] = row["uid"][0];
+      dict["uid"] = row["uid"];
       dict["dtstart"] = row["dtstart"][0];
       dict["dtend"] = row["dtend"][0];
       dict["summary"] = row["summary"];
