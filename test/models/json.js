@@ -20,8 +20,10 @@ describe('models/json getJson() real test', function () {
       let row = data[i];
       let dict = {};
       dict["uid"] = row["uid"];
-      dict["dtstart"] = row["dtstart"][0];
-      dict["dtend"] = row["dtend"][0];
+      const dtstart = row["dtstart"][0];
+      dict["dtstart"] = dtstart.substring(6, 8) + '/' + dtstart.substring(4, 6) + '/' + dtstart.substring(0, 4);
+      const dtend = row["dtend"][0];
+      dict["dtend"] = dtend.substring(6, 8) + '/' + dtend.substring(4, 6) + '/' + dtend.substring(0, 4);
       dict["summary"] = row["summary"];
       json[i] = dict;
     }
