@@ -19,11 +19,12 @@ describe('models/json getJson() real test', function () {
     for (let i = 0; i < data.length; i++) {
       let row = data[i];
       let dict = {};
+      //MM/DD/YYYY
       dict["uid"] = row["uid"];
       const dtstart = row["dtstart"][0];
-      dict["dtstart"] = dtstart.substring(6, 8) + '/' + dtstart.substring(4, 6) + '/' + dtstart.substring(0, 4);
+      dict["dtstart"] = dtstart.substring(4, 6) + '/' + dtstart.substring(6, 8) + '/' + dtstart.substring(0, 4);
       const dtend = row["dtend"][0];
-      dict["dtend"] = dtend.substring(6, 8) + '/' + dtend.substring(4, 6) + '/' + dtend.substring(0, 4);
+      dict["dtend"] = dtend.substring(4, 6) + '/' + dtend.substring(6, 8) + '/' + dtend.substring(0, 4);
       dict["summary"] = row["summary"];
       json[i] = dict;
     }
