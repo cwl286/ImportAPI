@@ -20,15 +20,6 @@
   },
   "author": "cwl",
   "license": "MIT",
-  "devDependencies": {
-    "chai": "^4.3.6",
-    "chai-http": "^4.3.0",
-    "eslint": "^8.12.0",
-    "eslint-config-google": "^0.14.0",
-    "mocha": "^9.2.2",
-    "nyc": "^15.1.0",
-    "sinon": "^13.0.1"
-  },
   "eslintConfig": {
     "extends": [
       "eslint:recommended",
@@ -104,6 +95,7 @@
     "passport-local": "^1.0.0",
     "passport-localapikey-update": "^0.6.0",
     "proxy-chain": "^1.0.4",
+    "puppeteer": "^19.2.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.9.0",
     "random-useragent": "^0.5.0",
@@ -111,5 +103,14 @@
     "winston": "^3.7.2",
     "xmldom": "^0.6.0",
     "xpath-html": "^1.0.3"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "eslint": "^8.12.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^9.2.2",
+    "nyc": "^15.1.0",
+    "sinon": "^13.0.1"
   }
 }
