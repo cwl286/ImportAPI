@@ -1,176 +1,149 @@
-const { describe, it } = require('mocha');
-const { assert, expect } = require('chai');
-const sinon = require('sinon');
+/**
+ * check is valid url
+ * @param {string} str 
+ * @return {boolean}
+ */
+const isValidUrl = function (str) {
+    try {
+        new URL(str);
+    } catch (_) {
+        return false;
+    }
+    return true;
+};
 
-describe('controllers/aux isValidUrl()', function () {
-    const { isValidUrl } = require('../../app/controllers/aux/index');
+/**
+ * convert to million base
+ * e.g. 1B -> 1000, 
+ * 1K -> 0.001
+ * 1M -> 1
+ * @param {string} str 
+ * @return {string}
+ */
+const toMilBase = function (str) {
+    if (!str) {
+        return '';
+    }
+    if (str.slice(-1) == 'M') {
+        return str.replaceAll(',', '').replace('M', '');
+    } else if (str.slice(-1) == 'B') {
+        // convert billion to million format e.g. 1B -> 1000
+        return String(parseFloat(str.replaceAll(',', '').replace('B', '')) * 1000);
+    } else if (str.slice(-1) == 'K') {
+        // convert billion to million format e.g. 1K -> 0.001
+        return String(parseFloat(str.replaceAll(',', '').replace('K', '')) / 1000);
+    }
+    return str;
+};
 
-    it('valid url', async function () {
-        const url = 'https://www.yahoo.com';
-        assert.equal(isValidUrl(url), true, 'should be valid');
+/**
+ * try to parse a string into float type
+ * otherwise return itself
+ * @param {string} input 
+ * @return {number} 
+ */
+const tryParseFloat = function (input) {
+    if (!input) {
+        return input;
+    }
+    const str = input.toString().replaceAll(',', '');
+    if (!isNaN(str)) {
+        // e.g. 15,000
+        return Math.round(parseFloat(str) * 10000) / 10000;
+    } else if (str.indexOf('%') == str.length - 1) {
+        // e.g. 15%
+        let v = parseFloat(str) / 100;
+        v = Math.round(v * 10000) / 10000;
+        return (!isNaN(v)) ? v : input;
+    }
+    return input;
+};
+
+/**
+ * convert financial number to math number 
+ * e.g. '(1000)' -> '-1000', '-'  ->  0, '1,000' -> '1000'
+ * @param {string} str 
+ * @return {string}
+ */
+const finToMathFormat = function (str) {
+    if (!str) {
+        return '';
+    } else if (str === '-') {
+        return null;
+    }
+    const finds = str.match(/([0-9.,]+[TBMK]?)/g);
+    if (finds) {
+        for (const f of finds) {
+            str = (!isNaN(f.replace(/[TBMK,]+/g, ''))) ? str.replaceAll(`(${f})`, `-${f}`) : str;
+        }
+    }
+    return str;
+};
+
+/**
+ * Transponse a array
+ * @param {Array} arr 
+ * @return {Array}
+ */
+const transpose = function (arr) {
+    return arr[0].map((_, colIndex) => arr.map(row => row[colIndex]));
+};
+
+/**
+ * Find all indexes of a string in a longer string
+ * @param {string} str longer string 
+ * @param {string} target target string
+ * @return {Array} array of number
+ */
+const indexesOf = function (str, target) {
+    const startingIndices = [];
+    let indexOccurence = str.indexOf(target, 0);
+    while (indexOccurence >= 0) {
+        startingIndices.push(indexOccurence);
+        indexOccurence = str.indexOf(target, indexOccurence + 1);
+    }
+    return startingIndices;
+};
+
+/**
+ * Aux function to convert an array of arrays into an object of objects
+ * e.g. from:
+ * ['1a', '1b', '1c', '1d'],
+ * ['2a', '2b', '2c', '2d'],
+ * ['3a', '3b', '3c', '3d']
+ * e.g. To: 
+ * {1b: {2a: 2b, 3a: 3b}}
+ * {1c: {2a: 2c, 3a: 3c}}
+ * {1d: {2a: 2d, 3a: 3d}}
+ * @param {Array} arr a 2d array repsentating rows of a table
+ * @return {Object} object of objects
+ */
+const arrayToObject = (arr) => {
+    if (!arr) {
+        return {};
+    } else if (arr.length === 0) {
+        return {};
+    } else if (arr[0] === 0) {
+        return {};
+    }
+    const dict = {};
+    const headers = arr[0].slice(1);
+    arr.slice(1).map((row, _) => {
+        row.slice(1).map((cell, colIndex) => {
+            const $ = {};
+            $[row[0]] = cell;
+            dict[headers[colIndex]] = { ...dict[headers[colIndex]], ...$ };
+        });
     });
+    return dict;
+};
 
-    it('invalid url', async function () {
-        const url = 'dummyurl.com';
-        assert.equal(isValidUrl(url), false, 'should be invalid');
-    });
-});
-
-describe('controllers/aux finToMathFormat()', function () {
-    const { finToMathFormat } = require('../../app/controllers/aux/index');
-
-    it('convert to math format (10)', async function () {
-        const res = finToMathFormat('(10)');
-        expect(res).to.be.equal('-10');
-    });
-
-    it('convert to math format (1,000)', async function () {
-        const res = finToMathFormat('(1,000)');
-        expect(res).to.be.equal('-1,000');
-    });
-
-    it('convert to math format (1,000.99)', async function () {
-        const res = finToMathFormat('(1,000.99)');
-        expect(res).to.be.equal('-1,000.99');
-    });
-
-    it('convert to math format (10B)', async function () {
-        const res = finToMathFormat('(10B)');
-        expect(res).to.be.equal('-10B');
-    });
-
-    it('no change "-"', async function () {
-        const res = finToMathFormat('-');
-        expect(res).to.be.equal(null);
-    });
-
-    it('no change "-3.10%"', async function () {
-        const res = finToMathFormat('-3.10%');
-        expect(res).to.be.equal('-3.10%');
-    });
-    it('no change ""', async function () {
-        const res = finToMathFormat('');
-        expect(res).to.be.equal('');
-    });
-
-    it('testing long string', async function () {
-        const res = finToMathFormat('testing long string (text)');
-        expect(res).to.be.equal('testing long string (text)');
-    });
-});
-
-describe('controllers/aux toMilBase()', function () {
-    const { toMilBase } = require('../../app/controllers/aux/index');
-
-    it('convert to mil. base: 1B', async function () {
-        const res = toMilBase('1B');
-        assert.equal(res, '1000', 'should be same');
-    });
-
-    it('convert to mil. base: 1K', async function () {
-        const res = toMilBase('1K');
-        assert.equal(res, '0.001', 'should be same');
-    });
-
-    it('convert to mil. base: ""', async function () {
-        const res = toMilBase('');
-        assert.equal(res, '', 'should be same');
-    });
-
-    it('convert to mil. base: -1B', async function () {
-        const res = toMilBase('-1B');
-        assert.equal(res, '-1000', 'should be same');
-    });
-
-    it('convert to mil. base: -', async function () {
-        const res = toMilBase('-');
-        assert.equal(res, '-', 'should be same');
-    });
-
-    it('convert to mil. base: 5.03% 4.95%', async function () {
-        const res = toMilBase('5.03% 4.95%');
-        assert.equal(res, '5.03% 4.95%', 'should be same');
-    });
-});
-
-
-describe('controllers/aux tryParseFloat()', function () {
-    const { tryParseFloat } = require('../../app/controllers/aux/index');
-
-    it('try to convert to float type: 1,000', async function () {
-        const res = tryParseFloat('1,000');
-        assert.equal(res, '1000', 'should be same');
-    });
-
-    it('try to convert to float type: 10%', async function () {
-        const res = tryParseFloat('10%');
-        assert.equal(res, 0.1, 'should be same');
-    });
-
-    it('try to convert to float type: -10%', async function () {
-        const res = tryParseFloat('-10%');
-        assert.equal(res, -0.1, 'should be same');
-    });
-
-    it('try to convert to float type: sentence', async function () {
-        const res = tryParseFloat('sentence%');
-        assert.equal(res, 'sentence%', 'should be same');
-    });
-
-
-    it('try to convert to float type: null', async function () {
-        const res = tryParseFloat(null);
-        assert.equal(res, null, 'should be same');
-    });
-});
-
-describe('controllers/aux arrayToObject()', function () {
-    const { arrayToObject } = require('../../app/controllers/aux/index');
-    it('case 1', async function () {
-        const arr = [
-            ['1a', '1b', '1c', '1d'],
-            ['2a', '2b', '2c', '2d'],
-            ['3a', '3b', '3c', '3d']
-        ];
-        const obj = {
-            '1b': { '2a': '2b', '3a': '3b' },
-            '1c': { '2a': '2c', '3a': '3c' },
-            '1d': { '2a': '2d', '3a': '3d' }
-        };
-        expect(arrayToObject(arr)).to.be.deep.equal(obj);
-    });
-
-    it('case 2', async function () {
-        const arr = [
-            ['1a', '1b', '1c'],
-            ['2a', '2b', '2c'],
-            ['3a', '3b', '3c'],
-            ['4a', '4b', '4c'],
-            ['5a', '5b', '5c'],
-        ];
-        const obj = {
-            '1b': { '2a': '2b', '3a': '3b', '4a': '4b', '5a': '5b' },
-            '1c': { '2a': '2c', '3a': '3c', '4a': '4c', '5a': '5c' },
-        };
-        expect(arrayToObject(arr)).to.be.deep.equal(obj);
-    });
-
-    it('case 3', async function () {
-        const arr = [
-            ['1a', '1b', '1c'],
-        ];
-        const obj = {};
-        expect(arrayToObject(arr)).to.be.deep.equal(obj);
-    });
-
-    it('case 4', async function () {
-        const arr = [
-            ['1a'],
-            ['2a'],
-            ['3a'],
-            ['4a'],
-        ];
-        const obj = {};
-        expect(arrayToObject(arr)).to.be.deep.equal(obj);
-    });
-});
+module.exports = {
+    toMilBase: toMilBase,
+    finToMathFormat: finToMathFormat,
+    isValidUrl: isValidUrl,
+    tryParseFloat: tryParseFloat,
+    transpose: transpose,
+    indexesOf: indexesOf,
+    arrayToObject: arrayToObject,
+};

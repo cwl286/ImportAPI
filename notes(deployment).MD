@@ -44,7 +44,10 @@ $ heroku buildpacks:add heroku/nodejs
 $ heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
 $ git add .
 $ git commit -am "make it better"
-$ git push heroku master
+## Push the code from your local repository’s main branch to your heroku remote
+##$ git push heroku master
+## Deploy From a Branch Besides master
+$ git push heroku ShareMatrixAPI:master
 
 # it may need
 $ heroku ps:scale web=1
@@ -71,7 +74,7 @@ $ heroku ps:scale web=1
     - [https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true](https://devcenter.heroku.com/articles/getting-started-with-nodejs?singlepage=true)
 
 
-#### *docker*   (deploy without REDIS) <br/>
+#### *docker*  <br/>
 1. Start Docker daemon
 2. Go to the directory of *Dockerfile*.
 3. To build a docker image (dot at the end is a must).
@@ -79,10 +82,4 @@ $ heroku ps:scale web=1
 4. Run the docker image by typing 
 `$ docker run -d --rm -p 3000:3000  <YOUR_IMAGE_NAME>`
     - *3000:3000* refers to *<HOST_PORT>:<IMAGE_PORT>*, where in *Dockerfile*, *<IMAGE_PORT>* is defined as *ENV PORT=3000* and then *EXPOSE 3000*.
-    - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/))
-
-#### *docker compose*   (deploy with REDIS) <br/>
-1. Start Docker daemon
-2. Go to the directory of *docker-compose.yml*.
-3. Type `$ docker compose up --build` in terminal to build docker images
     - To test build and run it locally ([http://localhost:3000/](http://localhost:3000/))

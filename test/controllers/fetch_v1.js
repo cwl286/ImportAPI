@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { assert, expect } = require('chai');
 const sinon = require('sinon');
 
-describe('controllers/v1/import/ stimulation', function () {
+describe.skip('controllers/v1/import/ stimulate importHtml()', function () {
     let stubFunc;
 
     before(function () {
@@ -35,7 +35,19 @@ describe('controllers/v1/import/ stimulation', function () {
     });
 });
 
-describe('controllers/v1 stimulate importXML()', function () {
+describe('controllers/v1/import/ real test importJson()', function () {
+    const url = 'https://www.1823.gov.hk/common/ical/en.json';
+
+    it('query body', async function () {
+        const { importJson } = require('../../app/controllers/routes/v1/import');
+        const res = await importJson(url);
+        assert.isString(res, 'not a string');
+        assert.isBoolean(res.startsWith('<body>'), 'not start with <body>');
+        assert.isBoolean(res.endsWith('</body>'), 'not end with </body>');
+    });
+});
+
+describe.skip('controllers/v1 stimulate importXML()', function () {
     let stubFunc;
 
     before(function () {

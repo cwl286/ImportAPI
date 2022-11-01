@@ -5,7 +5,7 @@ const session = require('express-session');
 const helmet = require('helmet');
 
 
-const { apiRouterV1, apiRouterV2 } = require('./controllers/routes/index');
+const { apiRouterV1 } = require('./controllers/routes/index');
 const { initAuth } = require('./controllers/authorization/index');
 const { initAccessLogger } =  require('./controllers/logger/index');
 const { errorHandler, APIError, UnauthError, NotFoundError } = require('./controllers/error/index');
@@ -58,7 +58,6 @@ app.all('/', function (req, res) {
 });
 
 app.use('/api/v1', apiRouterV1);
-app.use('/api/v2', apiRouterV2);
 
 // '/logout'
 app.all('/logout', function (req, res) {

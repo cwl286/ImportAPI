@@ -37,24 +37,11 @@ const importXML = async function (url, query) {
  * importJson('https://www.1823.gov.hk/common/ical/en.json')
  * @return {JSON}
  */
- const importJson = async function (url = "https://www.1823.gov.hk/common/ical/en.json") {
+ const importJson = async function (url) {
     
     const { getHtml } = require('../../../models/index');
-    const obj = await getHtml(url);
-    const data = obj["vcalendar"][0]["vevent"];
-    const json = {};
-    for (let i = 0; i < data.length; i++) {
-      let row = data[i];
-      let dict = {};
-      dict["uid"] = row["uid"];
-      const dtstart = row["dtstart"][0];
-      dict["dtstart"] = dtstart.substring(4, 6) + '/' + dtstart.substring(6, 8) + '/' + dtstart.substring(0, 4);
-      const dtend = row["dtend"][0];
-      dict["dtend"] = dtend.substring(4, 6) + '/' + dtend.substring(6, 8) + '/' + dtend.substring(0, 4);
-      dict["summary"] = row["summary"];
-      json[i] = dict;
-    }
-    return json;
+    const json = getHtml(url);
+    return (json)? json : '';
 };
 
 module.exports = {
